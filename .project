@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>urbotanist</name>
+	<comment>
+		R-Package with custom functions for the work with specimens and
+		database.
+	</comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.statet.ide.resourceProjects.Statet</nature>
+		<nature>org.eclipse.statet.r.resourceProjects.R</nature>
+		<nature>org.eclipse.statet.r.resourceProjects.RPkg</nature>
+		<nature>org.eclipse.statet.docmlet.resourceProjects.Wikitext</nature>
+	</natures>
+</projectDescription>

@@ -4,7 +4,11 @@
 ################################################################################
 
 library(devtools)
+library(styler)
 library(rmarkdown)
+
+# Improve coding style
+style_pkg()
 
 ## source("data-raw/import-references.R")
 document()

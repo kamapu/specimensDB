@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>urbotanist</name>
+	<name>specimensDB</name>
 	<comment>
 		R-Package with custom functions for the work with specimens and
 		database.

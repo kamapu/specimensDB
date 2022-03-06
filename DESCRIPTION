@@ -1,21 +1,22 @@
-Package: urbotanist
+Package: specimensDB
 Version: 0.0.1
 Encoding: UTF-8
-Title: Working with Herbarium Specimens
+Title: Linking databases with package specimens
 Authors@R:
 	person("Miguel", "Alvarez", email="kamapu78@gmail.com",
 		role=c("aut","cre"), comment=c(ORCID="0000-0003-1500-1834"))
 Depends:
-	R(>= 4.0.0),
-	taxlist
+	R(>= 4.0.0)
 Imports:
     DBI,
 	methods,
 	RPostgreSQL,
     sf,
+    specimens,
     vegtableDB,
     yamlme
 Remotes:
+	github::kamapu/specimens,
     github::kamapu/vegtableDB
 Suggests:
 	rmarkdown,
@@ -24,7 +25,7 @@ Description:
 	Routines for the work with herbarium specimens.
 LazyData: true
 Roxygen: list(markdown = TRUE)
-License: GPL (>= 2)
-URL: https://github.com/kamapu/urbotanist
-BugReports: https://github.com/kamapu/urbotanist/issues
+License: file LICENSE
+URL: https://github.com/kamapu/specimensDB
+BugReports: https://github.com/kamapu/specimensDB/issues
 RoxygenNote: 7.1.2

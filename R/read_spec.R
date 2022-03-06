@@ -103,7 +103,7 @@ setMethod(
       all = TRUE,
       sort = FALSE
     )
-    Det <- merge(Det, taxon_names[, c("tax_id", "taxon_name", "taxon_author")],
+    Det <- merge(Det, tax_names[, c("tax_id", "taxon_name", "taxon_author")],
       all = TRUE, sort = FALSE
     )
     # Get families

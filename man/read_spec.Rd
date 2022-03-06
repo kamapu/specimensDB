@@ -2,35 +2,31 @@
 % Please edit documentation in R/read_spec.R
 \name{read_spec}
 \alias{read_spec}
-\alias{read_spec,PostgreSQLConnection,PostgreSQLConnection,character-method}
+\alias{read_spec,PostgreSQLConnection,PostgreSQLConnection-method}
 \alias{PostgreSQLConnection,PostgreSQLConnection,character-method}
 \title{Import Specimen Information.}
 \usage{
-read_spec(db, adm, tax, ...)
+read_spec(db, adm, ...)
 
-\S4method{read_spec}{PostgreSQLConnection,PostgreSQLConnection,character}(db, adm, tax, bunch, ...)
+\S4method{read_spec}{PostgreSQLConnection,PostgreSQLConnection}(db, adm, bulk, ...)
 }
 \arguments{
 \item{db, adm}{Connections to the main database and the database containing
 administrative units, respectively. Both connections have to be of class
 \linkS4class{PostgreSQLConnection}.}
 
-\item{tax}{Character value indicating the taxonomy used as reference for
-taxonomic information.}
-
 \item{...}{Further arguments passed among methods (not yet used).}
 
-\item{bunch}{Integer vector including the ID's of the requested bunches
-(bulks).}
+\item{bulk}{Integer vector including the ID's of the requested bulks
+(campaigns or projects).}
 }
 \value{
 An S3 object of class \code{specimens}.
 }
 \description{
-By convenience a single table will be imported from the database including
-original variable names.
-This table can be passed to a specific format required by an herbarium using
-\code{\link[=release]{release()}}.
+Import function for herbarium specimens stored in own database.
+Information is arranged into three tables and formatted as an object of class
+\linkS4class{specimens}.
 }
 \author{
 Miguel Alvarez \email{kamapu@posteo.com}

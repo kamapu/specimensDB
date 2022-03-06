@@ -20,9 +20,9 @@ saveRDS(Spec, "lab/specimens.rds")
 # Arguments
 db <- conn1
 adm <- conn2
+bunch = 2
 
-
-
+Coll <- st_read(conn1, query = "select * from specimens.collections")
 
 
 

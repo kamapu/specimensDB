@@ -3,7 +3,6 @@
 \name{read_spec}
 \alias{read_spec}
 \alias{read_spec,PostgreSQLConnection,PostgreSQLConnection-method}
-\alias{read_spec,PostgreSQLConnection,PostgreSQLConnection,character-method}
 \title{Import Specimen Information.}
 \usage{
 read_spec(db, adm, ...)

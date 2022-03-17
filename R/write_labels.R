@@ -37,9 +37,12 @@ write_labels <- function(x, ...) {
 write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
                                    date_format = "%d.%m.%Y", ...) {
   # get rid of extension
-  if (substr(output_file, nchar(output_file) - 3,
-		  nchar(output_file)) == ".pdf")
-	  output_file <- substr(output_file, 1, nchar(output_file) - 4)
+  if (substr(
+    output_file, nchar(output_file) - 3,
+    nchar(output_file)
+  ) == ".pdf") {
+    output_file <- substr(output_file, 1, nchar(output_file) - 4)
+  }
   # Format variables
   N <- nrow(x)
   x$coll_date <- format(x$coll_date, date_format)
@@ -98,7 +101,7 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
   )
   out_file <- tempfile()
   render_rmd(Labels, output_file = out_file)
-  # Merge into 
+  # Merge into
   if (merge) {
     Labels2 <- write_rmd(
       geometry = paste(
@@ -121,8 +124,11 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
     )
     # Render merged sheets
     render_rmd(Labels2, output_file = output_file)
-  } else
-	  file.copy(from = paste(out_file, "pdf", sep = "."),
-			  to = paste(output_file, "pdf", sep = "."))
+  } else {
+    file.copy(
+      from = paste(out_file, "pdf", sep = "."),
+      to = paste(output_file, "pdf", sep = ".")
+    )
+  }
   invisible(Labels)
 }

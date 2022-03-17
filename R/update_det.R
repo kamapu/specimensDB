@@ -1,0 +1,99 @@
+#' @name update_det
+#'
+#' @title Updating determinations of specimens.
+#'
+#' @description
+#' Inserting new determinations to specimens stored in the database.
+#'
+#' @param db Connections to the database as [PostgreSQLConnection-class].
+#' @param df A data frame containing the information to be appended in the
+#'     determination history of the specimen. This data frame must contain
+#'     following columns: **spec_id** (identifier of specimens),
+#'     **taxon_usage_id** (identifier of the taxon usage name), **taxonomy**
+#'     (name of the taxonomic list applied to the update), **det** (name of the
+#'     person that determined the species), and **det_date** (date of
+#'     determination as [Date][as.Date]).
+#' @param ... Further arguments passed among methods (not yet used).
+#'
+#' @return SQL commands will be executed.
+#'
+#' @author Miguel Alvarez \email{kamapu@@posteo.com}
+
+#' @rdname update_det
+#'
+#' @exportMethod update_det
+setGeneric(
+  "update_det",
+  function(db, df, ...) {
+    standardGeneric("update_det")
+  }
+)
+
+#' @rdname update_det
+#'
+#' @aliases update_det,PostgreSQLConnection,data.frame-method
+setMethod(
+  "update_det",
+  signature(
+    db = "PostgreSQLConnection",
+    df = "data.frame"
+  ),
+  function(db, df, ...) {
+    col_names <- c("spec_id", "taxon_usage_id", "taxonomy", "det", "det_date")
+    # Cross-checks
+    if (!all(col_names %in% names(df))) {
+      col_names <- col_names[!col_names %in% names(df)]
+      stop(paste0(
+        "Following columns are missing in 'df': '",
+        paste0(col_names, collapse = "' '"), "'."
+      ))
+    }
+    if (class(df$det_date) != "Date") {
+      stop("Class 'Date' for 'det_date' in 'df' is mandatory.")
+    }
+    # Retrieve names
+    query <- paste(
+      "select taxon_usage_id,usage_name,author_name",
+      "from plant_taxonomy.taxon_names",
+      paste0("where taxon_usage_id in (", paste0(df$taxon_usage_id,
+        collapse = ","
+      ), ")")
+    )
+    Names <- dbGetQuery(db, query)
+    Names <- merge(df, Names, sort = FALSE, all = TRUE)
+    cat("Updates of specimens determination:\n\n")
+    print(Names[, c(
+      "spec_id", "coll_nr", "usage_name", "author_name", "det",
+      "det_date"
+    )])
+    OUT <- askYesNo("Do you like to proceed?")
+    if (!is.na(OUT) & OUT) {
+      query <- paste(
+        "select tax_id,taxon_usage_id,taxon_concept_id",
+        "from plant_taxonomy.names2concepts",
+        paste0(
+          "where taxon_usage_id in (",
+          paste0(Names$taxon_usage_id, collapse = ","), ")"
+        )
+      )
+      IDs <- dbGetQuery(db, query)
+      query <- paste(
+        "select taxon_concept_id,top_view taxonomy",
+        "from plant_taxonomy.taxon_concepts",
+        paste0(
+          "where taxon_concept_id in (",
+          paste0(IDs$taxon_concept_id, collapse = ","), ")"
+        )
+      )
+      IDs <- merge(IDs, dbGetQuery(db, query))
+      Names$tax_id <- with(
+        IDs,
+        tax_id[match(
+          paste(Names$taxon_usage_id, Names$taxonomy, sep = "_"),
+          paste(taxon_usage_id, taxonomy, sep = "_")
+        )]
+      )
+    }
+    pgInsert(db, c("specimens", "history"), Names, partial.match = TRUE)
+  }
+)

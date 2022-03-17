@@ -1,5 +1,5 @@
 Package: specimensDB
-Version: 0.0.1
+Version: 0.0.1.9002
 Encoding: UTF-8
 Title: Linking databases with package specimens
 Authors@R:
@@ -10,9 +10,11 @@ Depends:
 Imports:
     DBI,
 	methods,
+	rpostgis,
 	RPostgreSQL,
     sf,
     specimens,
+    utils,
     vegtableDB,
     yamlme
 Remotes:

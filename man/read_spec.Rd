@@ -3,7 +3,7 @@
 \name{read_spec}
 \alias{read_spec}
 \alias{read_spec,PostgreSQLConnection,PostgreSQLConnection-method}
-\alias{PostgreSQLConnection,PostgreSQLConnection,character-method}
+\alias{read_spec,PostgreSQLConnection,PostgreSQLConnection,character-method}
 \title{Import Specimen Information.}
 \usage{
 read_spec(db, adm, ...)
@@ -27,6 +27,9 @@ An S3 object of class \code{specimens}.
 Import function for herbarium specimens stored in own database.
 Information is arranged into three tables and formatted as an object of class
 \linkS4class{specimens}.
+
+For convenience the function will display the list of updates and prompt a
+yes/no/cancel question. Here you should check the printed names.
 }
 \author{
 Miguel Alvarez \email{kamapu@posteo.com}

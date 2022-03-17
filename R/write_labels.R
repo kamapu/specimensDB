@@ -36,6 +36,7 @@ write_labels <- function(x, ...) {
 #' @export
 write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
                                    date_format = "%d.%m.%Y", ...) {
+  x <- as_data.frame(x)
   # get rid of extension
   if (substr(
     output_file, nchar(output_file) - 3,
@@ -46,10 +47,10 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
   # Format variables
   N <- nrow(x)
   x$coll_date <- format(x$coll_date, date_format)
-  x$TaxonName <- paste0("*", x$TaxonName, "*")
-  x$TaxonName <- gsub(" f. ", "* f. *", x$TaxonName, fixed = TRUE)
-  x$TaxonName <- gsub(" var. ", "* var. *", x$TaxonName, fixed = TRUE)
-  x$TaxonName <- gsub(" ssp. ", "* ssp. *", x$TaxonName, fixed = TRUE)
+  x$taxon_name <- paste0("*", x$taxon_name, "*")
+  x$taxon_name <- gsub(" f. ", "* f. *", x$taxon_name, fixed = TRUE)
+  x$taxon_name <- gsub(" var. ", "* var. *", x$taxon_name, fixed = TRUE)
+  x$taxon_name <- gsub(" ssp. ", "* ssp. *", x$taxon_name, fixed = TRUE)
   # Get rid of NA's
   for (i in names(x)) {
     x[[i]] <- paste(x[[i]])
@@ -61,7 +62,7 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
     paste0("**", project_name, "** \\vspace{0.2cm}\n"),
     rep("\\raggedright\n", N),
     paste("**Familie:**", family, "\\"),
-    paste("**Taxon:**", TaxonName, AuthorName, "\\"),
+    paste("**Taxon:**", taxon_name, taxon_author, "\\"),
     rep("\\small \\vspace{0.2cm}\n\n", N),
     paste(
       "**Land:**", name_0, "\\hspace{0.5cm} **Provinz:**",
@@ -74,7 +75,7 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
       "**Sammler:**", leg, "\\hspace{0.5cm} **Sammelnr.:**",
       coll_nr, "\\"
     ),
-    paste("**det.:**", det_name, "\\"),
+    paste("**det.:**", det, "\\"),
     rep("\\vspace{0.2cm}\n", N),
     paste("**Anmerkungen:**", remarks, "\\"),
     rep("\\pagebreak", N)

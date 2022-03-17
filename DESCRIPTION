@@ -6,14 +6,14 @@ Authors@R:
 	person("Miguel", "Alvarez", email="kamapu78@gmail.com",
 		role=c("aut","cre"), comment=c(ORCID="0000-0003-1500-1834"))
 Depends:
-	R(>= 4.0.0)
+	R(>= 4.0.0),
+	specimens
 Imports:
     DBI,
 	methods,
 	rpostgis,
 	RPostgreSQL,
     sf,
-    specimens,
     utils,
     vegtableDB,
     yamlme

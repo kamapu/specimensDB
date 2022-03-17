@@ -21,7 +21,10 @@ unlink(file.path(Folder, Files))
 
 # Re-build package and manual
 pkg_loc <- build(path = Folder)
-build_manual(path = Folder)
 
 # common check
 check_built(path = pkg_loc)
+
+# a posteriori
+build_manual(path = Folder)
+install()

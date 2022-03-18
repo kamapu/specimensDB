@@ -100,18 +100,20 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
   ))
   # Produce single files
   Labels <- write_rmd(
-    geometry = paste(
-      paste0(
-        c("paperheight=", "paperwidth="), dim[c("h", "w")],
-        rep(dim["u"], 2)
+    geometry = paste0(
+      c(
+        paste0(
+          c("paperheight=", "paperwidth="), dim[c("h", "w")],
+          rep(dim["u"], 2)
+        ),
+        "bindingoffset=0mm",
+        paste0(
+          c("left=", "right=", "top=", "bottom="),
+          mar[c("l", "r", "t", "b")], rep(mar["u"], 4)
+        ),
+        "footskip=0mm"
       ),
-      "bindingoffset=0mm",
-      paste0(
-        c("left=", "right=", "top=", "bottom="),
-        mar[c("l", "r", "t", "b")], rep(mar["u"], 4)
-      ),
-      "footskip=0mm",
-      sep = ","
+      collapse = ","
     ),
     "header-includes" = c(
       "- \\usepackage[english]{babel}",
@@ -138,12 +140,12 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
         "- \\usepackage{pdfpages}"
       ),
       output = "pdf_document",
-      classoption = classoption,
-      ...,
       body = paste0(
         paste0("\\includepdf[pages=-,nup=", nup[1], "x", nup[2], ",frame="),
         tolower(paste(frame)), "]{", out_file, ".pdf}"
-      )
+      ),
+      classoption = classoption,
+      ...
     )
     # Render merged sheets
     render_rmd(Labels2, output_file = output_file)

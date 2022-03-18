@@ -109,6 +109,8 @@ setMethod(
     Det <- merge(Det, tax_names[, c("tax_id", "taxon_name", "taxon_author")],
       all = TRUE, sort = FALSE
     )
+    # Get genus
+    Det$genus <- dissect_name(Det$taxon_name, repaste = 1)
     # Get families
     Levels <- dbGetQuery(db, "select * from plant_taxonomy.taxon_levels")
     query <- paste(

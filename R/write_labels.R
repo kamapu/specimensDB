@@ -17,7 +17,7 @@
 #'     around single labels or not. It works only if `'merge = TRUE'`.
 #' @param date_format A character value indicating the format used for the
 #'     collection date. It is passed to the function [format.Date()].
-#' @param ... Further arguments passed to [render_rmd()]. It works only if
+#' @param ... Further arguments passed to [write_rmd()]. It works only if
 #'     `'merge = TRUE'`.
 #'
 #' @return
@@ -130,7 +130,8 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
   } else {
     file.copy(
       from = paste(out_file, "pdf", sep = "."),
-      to = paste(output_file, "pdf", sep = ".")
+      to = paste(output_file, "pdf", sep = "."),
+      overwrite = TRUE
     )
   }
   invisible(Labels)

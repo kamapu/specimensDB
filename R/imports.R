@@ -4,6 +4,7 @@
 #' @importFrom utils askYesNo
 #' @importFrom rpostgis pgInsert
 #' @importFrom yamlme render_rmd txt_body write_rmd
+#' @importFrom specimens as_data.frame
 #' @importClassesFrom specimens specimens
 #' @importClassesFrom RPostgreSQL PostgreSQLConnection
 #' @importClassesFrom yamlme rmd_doc

@@ -1,4 +1,4 @@
-# TODO:   Working script for testing the package 'gisrepos'
+# TODO:   Working script for testing the package source
 # 
 # Author: Miguel Alvarez
 ################################################################################
@@ -10,7 +10,8 @@ library(rmarkdown)
 # Improve coding style
 style_pkg()
 
-## source("data-raw/import-references.R")
+# Write system data and document
+source("data-raw/create-data.R")
 document()
 
 # clean built package and manual

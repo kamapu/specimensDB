@@ -17,7 +17,8 @@
 #'     around single labels or not. It works only if `'merge = TRUE'`.
 #' @param date_format A character value indicating the format used for the
 #'     collection date. It is passed to the function [format.Date()].
-#' @param ... Further arguments passed to [render_rmd()].
+#' @param ... Further arguments passed to [render_rmd()]. It works only if
+#'     `'merge = TRUE'`.
 #'
 #' @return
 #' An invisible [rmd_doc-class] object.
@@ -121,7 +122,8 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
       body = paste0(
         "\\includepdf[pages=-,nup=2x4,frame=",
         tolower(paste(frame)), "]{", out_file, ".pdf}"
-      )
+      ),
+      ...
     )
     # Render merged sheets
     render_rmd(Labels2, output_file = output_file)

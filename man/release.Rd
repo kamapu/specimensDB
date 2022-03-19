@@ -8,7 +8,7 @@
 \usage{
 release(x, ...)
 
-\method{release}{specimens}(x, herb, translator, ...)
+\method{release}{specimens}(x, herb, trans, ...)
 }
 \arguments{
 \item{x}{A \linkS4class{specimens} object retrieved by \code{\link[=read_spec]{read_spec()}}.}
@@ -18,7 +18,7 @@ release(x, ...)
 \item{herb}{A character value containig the code of the herbarium for the
 release.}
 
-\item{translator}{A list containing translations of variable names to the
+\item{trans}{A list containing translations of variable names to the
 requested template. The name of the elements represent an herbarium
 (usually as code by the Index Herbariorum) and contain a database with
 two columns: \strong{in} for the column name of the input object (after
@@ -27,7 +27,7 @@ respective column names in the output. For columns in the requested
 output without representative in the \linkS4class{specimens} object, you may
 indicate it with \code{NA} values at \strong{in}. If not provided, this function
 will use a pre installed translator (check with
-\code{specimensDB::translator}).}
+\code{specimensDB:::translator}).}
 }
 \value{
 A data frame with columns sorted and named for release at a respective

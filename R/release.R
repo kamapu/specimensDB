@@ -13,7 +13,7 @@
 #' @param x A [specimens-class] object retrieved by [read_spec()].
 #' @param herb A character value containig the code of the herbarium for the
 #'     release.
-#' @param translator A list containing translations of variable names to the
+#' @param trans A list containing translations of variable names to the
 #'     requested template. The name of the elements represent an herbarium
 #'     (usually as code by the Index Herbariorum) and contain a database with
 #'     two columns: **in** for the column name of the input object (after
@@ -22,7 +22,7 @@
 #'     output without representative in the [specimens-class] object, you may
 #'     indicate it with `NA` values at **in**. If not provided, this function
 #'     will use a pre installed translator (check with
-#'     `specimensDB::translator`).
+#'     `specimensDB:::translator`).
 #' @param ... Further arguments passed among methods (not in use).
 #'
 #' @return
@@ -41,9 +41,9 @@ release <- function(x, ...) {
 #' @method release specimens
 #'
 #' @export
-release.specimens <- function(x, herb, translator, ...) {
-  if (missing(translator)) {
-    translator <- translator
+release.specimens <- function(x, herb, trans, ...) {
+  if (missing(trans)) {
+    trans <- translator
   }
   if (!herb[1] %in% names(translator)) {
     stop(paste0(

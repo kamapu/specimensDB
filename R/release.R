@@ -45,7 +45,7 @@ release.specimens <- function(x, herb, trans, ...) {
   if (missing(trans)) {
     trans <- translator
   }
-  if (!herb[1] %in% names(translator)) {
+  if (!herb[1] %in% names(trans)) {
     stop(paste0(
       "The herbarium '", herb[1],
       "' is not in the installed catalog."
@@ -53,10 +53,13 @@ release.specimens <- function(x, herb, trans, ...) {
   }
   x <- as_data.frame(x)
   names(x) <- with(
-    translator[[herb]][!is.na(translator[[herb]]$"in"), ],
+    trans[[herb]][!is.na(trans[[herb]]$"in"), ],
     replace_x(names(x), get("in"), get("out"))
   )
-  no_name <- translator[[herb]][, "out"][!translator[[herb]][, "out"] %in%
+  for (i in trans[[herb]][is.na(trans[[herb]][, "in"]), "out"]) {
+    x[[i]] <- rep(NA, length(x[[1]]))
+  }
+  no_name <- trans[[herb]][, "out"][!trans[[herb]][, "out"] %in%
     names(x)]
   if (length(no_name) > 0) {
     stop(paste0(
@@ -64,10 +67,7 @@ release.specimens <- function(x, herb, trans, ...) {
       paste0(no_name, collapse = "','"), "'."
     ))
   }
-  for (i in translator[[herb]][is.na(translator[[herb]][, "in"]), "out"]) {
-    x[[i]] <- rep(NA, length(x[[1]]))
-  }
-  x <- x[, translator[[herb]][, "out"]]
+  x <- x[, trans[[herb]][, "out"]]
   class(x) <- "data.frame"
   return(x)
 }

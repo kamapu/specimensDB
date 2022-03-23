@@ -226,7 +226,7 @@ setMethod(
       Countries_map
     )]
     # Import GADM
-    if (!missing(gadm)) {
+    if (!missing(adm)) {
       gadm <- st_read(adm, query = paste0(
         "select name_0,name_1,name_2,geom\n",
         "from gadm\n",

@@ -10,9 +10,11 @@ read_spec(db, adm, ...)
 \S4method{read_spec}{PostgreSQLConnection,PostgreSQLConnection}(db, adm, bulk, ...)
 }
 \arguments{
-\item{db, adm}{Connections to the main database and the database containing
-administrative units, respectively. Both connections have to be of class
-\linkS4class{PostgreSQLConnection}.}
+\item{db}{Connection to the database as \linkS4class{PostgreSQLConnection}.}
+
+\item{adm}{Connection to the database containing administrative units as
+\linkS4class{PostgreSQLConnection}. If not provided, no administrative units
+will be included in the output.}
 
 \item{...}{Further arguments passed among methods (not yet used).}
 

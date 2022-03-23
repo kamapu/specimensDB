@@ -10,9 +10,10 @@
 #' For convenience the function will display the list of updates and prompt a
 #' yes/no/cancel question. Here you should check the printed names.
 #'
-#' @param db,adm Connections to the main database and the database containing
-#'     administrative units, respectively. Both connections have to be of class
-#'     [PostgreSQLConnection-class].
+#' @param db Connection to the database as [PostgreSQLConnection-class].
+#' @param adm Connection to the database containing administrative units as
+#'     [PostgreSQLConnection-class]. If not provided, no administrative units
+#'     will be included in the output.
 #' @param bulk Integer vector including the ID's of the requested bulks
 #'     (campaigns or projects).
 #' @param ... Further arguments passed among methods (not yet used).
@@ -225,14 +226,16 @@ setMethod(
       Countries_map
     )]
     # Import GADM
-    gadm <- st_read(adm, query = paste0(
-      "select name_0,name_1,name_2,geom\n",
-      "from gadm\n",
-      "where gid_0 in ('",
-      paste0(unique(Coll$country, collapse = "','"), "');\n")
-    ))
-    for (i in c("name_0", "name_1", "name_2")) {
-      Coll[[i]] <- gadm[[i]][st_nearest_feature(Coll, gadm)]
+    if (!missing(gadm)) {
+      gadm <- st_read(adm, query = paste0(
+        "select name_0,name_1,name_2,geom\n",
+        "from gadm\n",
+        "where gid_0 in ('",
+        paste0(unique(Coll$country, collapse = "','"), "');\n")
+      ))
+      for (i in c("name_0", "name_1", "name_2")) {
+        Coll[[i]] <- gadm[[i]][st_nearest_feature(Coll, gadm)]
+      }
     }
     return(new("specimens",
       collections = Coll, specimens = Spec,

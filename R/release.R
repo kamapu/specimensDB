@@ -38,6 +38,7 @@ release.specimens <- function(x, herb, ...) {
       "' is not in the installed catalog."
     ))
   }
+  x <- as_data.frame(x)
   names(x) <- with(
     translator[[herb]][!is.na(translator[[herb]]$"in"), ],
     replace_x(names(x), get("in"), get("out"))

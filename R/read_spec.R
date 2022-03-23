@@ -27,19 +27,19 @@
 #' @exportMethod read_spec
 setGeneric(
   "read_spec",
-  function(db, adm, ...) {
+  function(db, ...) {
     standardGeneric("read_spec")
   }
 )
+# TODO: Use rather S3 methods
 
 #' @rdname read_spec
 #'
-#' @aliases read_spec,PostgreSQLConnection,PostgreSQLConnection-method
+#' @aliases read_spec,PostgreSQLConnection-method
 setMethod(
   "read_spec",
   signature(
-    db = "PostgreSQLConnection",
-    adm = "PostgreSQLConnection"
+    db = "PostgreSQLConnection"
   ),
   function(db, adm, bulk, ...) {
     # Main table

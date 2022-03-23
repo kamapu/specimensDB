@@ -3,7 +3,7 @@
 #' @importFrom sf st_coordinates st_drop_geometry st_nearest_feature st_read
 #' @importFrom utils askYesNo
 #' @importFrom rpostgis pgInsert
-#' @importFrom taxlist replace_x
+#' @importFrom taxlist dissect_name replace_x
 #' @importFrom yamlme render_rmd txt_body write_rmd
 #' @importClassesFrom specimens specimens
 #' @importClassesFrom RPostgreSQL PostgreSQLConnection

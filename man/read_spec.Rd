@@ -2,19 +2,21 @@
 % Please edit documentation in R/read_spec.R
 \name{read_spec}
 \alias{read_spec}
-\alias{read_spec,PostgreSQLConnection,PostgreSQLConnection-method}
+\alias{read_spec,PostgreSQLConnection-method}
 \title{Import Specimen Information.}
 \usage{
-read_spec(db, adm, ...)
+read_spec(db, ...)
 
-\S4method{read_spec}{PostgreSQLConnection,PostgreSQLConnection}(db, adm, bulk, ...)
+\S4method{read_spec}{PostgreSQLConnection}(db, adm, bulk, ...)
 }
 \arguments{
-\item{db, adm}{Connections to the main database and the database containing
-administrative units, respectively. Both connections have to be of class
-\linkS4class{PostgreSQLConnection}.}
+\item{db}{Connection to the database as \linkS4class{PostgreSQLConnection}.}
 
 \item{...}{Further arguments passed among methods (not yet used).}
+
+\item{adm}{Connection to the database containing administrative units as
+\linkS4class{PostgreSQLConnection}. If not provided, no administrative units
+will be included in the output.}
 
 \item{bulk}{Integer vector including the ID's of the requested bulks
 (campaigns or projects).}

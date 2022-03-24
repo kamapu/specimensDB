@@ -4,6 +4,7 @@
 #' @importFrom taxlist replace_x dissect_name
 #' @importFrom utils askYesNo
 #' @importFrom rpostgis pgInsert
+#' @importFrom taxlist dissect_name replace_x
 #' @importFrom yamlme render_rmd txt_body write_rmd
 #' @importFrom specimens as_data.frame
 #' @importClassesFrom specimens specimens

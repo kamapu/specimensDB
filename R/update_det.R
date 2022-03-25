@@ -51,6 +51,37 @@ setMethod(
     if (class(df$det_date) != "Date") {
       stop("Class 'Date' for 'det_date' in 'df' is mandatory.")
     }
+    # No duplicates in input
+    dupl <- df[duplicated(df[, c("spec_id", "det_date")]), ]
+    if (nrow(dupl) > 0) {
+      print(dupl)
+      stop(paste0(
+        "The displayed entry is a duplicate.\n",
+        "Only one determination per day is allowed ",
+        "for the same specimen."
+      ))
+    }
+    # No duplicates considering database
+    query <- paste(
+      "select spec_id,det_date",
+      "from specimens.history",
+      paste0(
+        "where spec_id in (", paste0(unique(df$spec_id), collapse = ","),
+        ")"
+      )
+    )
+    in_db <- dbGetQuery(db, query)
+    dupl <- df[with(df, paste(spec_id, det_date, sep = "_")) %in%
+      with(in_db, paste(spec_id, det_date, sep = "_")), ]
+    if (nrow(dupl) > 0) {
+      print(dupl)
+      stop(paste0(
+        "The displayed entry is conflicting with a deterimantion ",
+        "in the database.\n",
+        "Only one determination per day is allowed ",
+        "for the same specimen."
+      ))
+    }
     # Retrieve names
     query <- paste(
       "select taxon_usage_id,usage_name,author_name",

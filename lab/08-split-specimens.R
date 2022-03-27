@@ -34,10 +34,36 @@ summary(SP, 1565)
 split_spec(db, 100000)
 
 # 2: Split selected specimen
-split_spec(db, 970, 3)
+split_spec(db, 970, 3, herbarium = "FB")
 
 # Cross-check
 SP <- read_spec(db, bulk = 2)
 summary(SP, 1565)
 
 SP2 <- subset(SP, coll_nr == 1565)
+
+
+library(rpostgis)
+
+spec_id = 970
+add = 3
+new_cols = list()
+
+
+
+
+
+
+### summary
+object <- SP2
+format = "%d.%m.%Y"
+
+
+
+
+
+
+
+
+
+

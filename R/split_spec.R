@@ -52,6 +52,31 @@ split_spec.PostgreSQLConnection <- function(db, spec_id, add = 1, ...) {
     DF[[i]] <- rep_len(new_cols[[i]], add)
   }
   DF <- DF[, names(DF) != "spec_id"]
+  old_ids <- unlist(dbGetQuery(db, paste(
+    "select spec_id",
+    "from specimens.specimens"
+  )))
   pgInsert(db, c("specimens", "specimens"), DF, partial.match = TRUE)
+  new_ids <- unlist(dbGetQuery(db, paste(
+    "select spec_id",
+    "from specimens.specimens"
+  )))
+  new_ids <- new_ids[!new_ids %in% old_ids]
+  # Copy determination history
+  query <- paste(
+    "select *", "from specimens.history", "where spec_id =",
+    spec_id[1]
+  )
+  Det <- dbGetQuery(db, query)
+  if (nrow(Det) > 0) {
+    DF <- list()
+    for (i in 1:length(new_ids)) {
+      Det$spec_id <- new_ids[i]
+      DF[[i]] <- Det
+    }
+    DF <- do.call(rbind, DF)
+    DF <- DF[, colnames(DF) != "fid"]
+    pgInsert(db, c("specimens", "history"), DF, partial.match = TRUE)
+  }
   message("\nDONE!")
 }

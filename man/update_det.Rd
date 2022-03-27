@@ -7,7 +7,7 @@
 \usage{
 update_det(db, df, ...)
 
-\S4method{update_det}{PostgreSQLConnection,data.frame}(db, df, ...)
+\S4method{update_det}{PostgreSQLConnection,data.frame}(db, df, compare = FALSE, ...)
 }
 \arguments{
 \item{db}{Connections to the database as \linkS4class{PostgreSQLConnection}.}
@@ -21,12 +21,23 @@ person that determined the species), and \strong{det_date} (date of
 determination as \link[=as.Date]{Date}).}
 
 \item{...}{Further arguments passed among methods (not yet used).}
+
+\item{compare}{Logical value indicating whether the determinations to be
+inserted should be compared with the input data frame or not (by default,
+not). If determinations for the same specimen at the same date are
+suppossed to be inserted in the database, they will be skipped.
+Note that duplicates in the input data frame will not be solved by this
+setting.}
 }
 \value{
 SQL commands will be executed.
 }
 \description{
 Inserting new determinations to specimens stored in the database.
+
+Note that more than one determination at the same date for the same specimen
+are not allowed and this will be checked before inserting new determinations.
+You can override this by setting \code{'compare = TRUE'}
 }
 \author{
 Miguel Alvarez \email{kamapu@posteo.com}

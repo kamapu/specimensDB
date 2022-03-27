@@ -49,16 +49,16 @@ df2 <- data.frame(
     det_date = rep(as.Date("2011-03-15"), 2))
 
 # Case 1: duplicated inputs
-specimensDB::update_det(conn, df1)
+new_det(conn, df1)
 
 # Case 2: duplicated inputs but using compare
-specimensDB::update_det(conn, df1, compare = TRUE)
+new_det(conn, df1, compare = TRUE)
 
 # Case 3: duplicated with determinations in database
-specimensDB::update_det(conn, df2)
+new_det(conn, df2)
 
 # Case 4: same as before but solved in advance
-specimensDB::update_det(conn, df2, compare = TRUE)
+new_det(conn, df2, compare = TRUE)
 
 # Cross-check
 SP <- read_spec(conn, bulk = 2)

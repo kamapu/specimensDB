@@ -17,6 +17,16 @@
 #'     around single labels or not. It works only if `'merge = TRUE'`.
 #' @param date_format A character value indicating the format used for the
 #'     collection date. It is passed to the function [format.Date()].
+#' @param dim A named vector indicating the dimensions of the single labels. You
+#'     need to specify **w** (width), **h** (height), and **u** (units).
+#' @param nup An integer vector of length 2 indicating the number of labels per
+#'     sheet (if `'merge = TRUE'`). The first value are number of columns and
+#'     the second, number of rows.
+#' @param mar A named vector indicating the margins. The mandatory names are
+#'     **l** (left), **r** (right), **t** (top), **b** (bottom), and
+#'     **u** (units).
+#' @param classoption A character value to be inserted as 'classoption' in the
+#'     yaml head for the Rmarkdown document.
 #' @param ... Further arguments passed to [write_rmd()]. It works only if
 #'     `'merge = TRUE'`.
 #'
@@ -36,7 +46,14 @@ write_labels <- function(x, ...) {
 #'
 #' @export
 write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
-                                   date_format = "%d.%m.%Y", ...) {
+                                   date_format = "%d.%m.%Y",
+                                   dim = c(h = 74, w = 105, u = "mm"),
+                                   nup = c(2, 4),
+                                   mar = c(
+                                     l = 7, r = 7, t = 7, b = 7,
+                                     u = "mm"
+                                   ),
+                                   classoption = "a4paper", ...) {
   x <- as_data.frame(x)
   # get rid of extension
   if (substr(
@@ -83,16 +100,20 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
   ))
   # Produce single files
   Labels <- write_rmd(
-    geometry = paste(
-      "paperheight=74mm",
-      "paperwidth=115mm",
-      "bindingoffset=0mm",
-      "left=7mm",
-      "right=7mm",
-      "top=7mm",
-      "bottom=7mm",
-      "footskip=0mm",
-      sep = ","
+    geometry = paste0(
+      c(
+        paste0(
+          c("paperheight=", "paperwidth="), dim[c("h", "w")],
+          rep(dim["u"], 2)
+        ),
+        "bindingoffset=0mm",
+        paste0(
+          c("left=", "right=", "top=", "bottom="),
+          mar[c("l", "r", "t", "b")], rep(mar["u"], 4)
+        ),
+        "footskip=0mm"
+      ),
+      collapse = ","
     ),
     "header-includes" = c(
       "- \\usepackage[english]{babel}",
@@ -120,9 +141,10 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
       ),
       output = "pdf_document",
       body = paste0(
-        "\\includepdf[pages=-,nup=2x4,frame=",
+        paste0("\\includepdf[pages=-,nup=", nup[1], "x", nup[2], ",frame="),
         tolower(paste(frame)), "]{", out_file, ".pdf}"
       ),
+      classoption = classoption,
       ...
     )
     # Render merged sheets

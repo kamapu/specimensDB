@@ -2,12 +2,20 @@
 % Please edit documentation in R/read_spec.R
 \name{read_spec}
 \alias{read_spec}
+<<<<<<< HEAD
+=======
+\alias{read_spec.PostgreSQLConnection}
+>>>>>>> refs/heads/devel
 \alias{read_spec,PostgreSQLConnection-method}
 \title{Import Specimen Information.}
 \usage{
 read_spec(db, ...)
 
+<<<<<<< HEAD
 \S4method{read_spec}{PostgreSQLConnection}(db, adm, bulk, ...)
+=======
+\method{read_spec}{PostgreSQLConnection}(db, adm, bulk, ...)
+>>>>>>> refs/heads/devel
 }
 \arguments{
 \item{db}{Connection to the database as \linkS4class{PostgreSQLConnection}.}

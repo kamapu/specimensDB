@@ -14,6 +14,10 @@ write_labels(x, ...)
   merge = TRUE,
   frame = FALSE,
   date_format = "\%d.\%m.\%Y",
+  dim = c(h = 74, w = 105, u = "mm"),
+  nup = c(2, 4),
+  mar = c(l = 7, r = 7, t = 7, b = 7, u = "mm"),
+  classoption = "a4paper",
   ...
 )
 }
@@ -35,6 +39,20 @@ around single labels or not. It works only if \code{'merge = TRUE'}.}
 
 \item{date_format}{A character value indicating the format used for the
 collection date. It is passed to the function \code{\link[=format.Date]{format.Date()}}.}
+
+\item{dim}{A named vector indicating the dimensions of the single labels. You
+need to specify \strong{w} (width), \strong{h} (height), and \strong{u} (units).}
+
+\item{nup}{An integer vector of length 2 indicating the number of labels per
+sheet (if \code{'merge = TRUE'}). The first value are number of columns and
+the second, number of rows.}
+
+\item{mar}{A named vector indicating the margins. The mandatory names are
+\strong{l} (left), \strong{r} (right), \strong{t} (top), \strong{b} (bottom), and
+\strong{u} (units).}
+
+\item{classoption}{A character value to be inserted as 'classoption' in the
+yaml head for the Rmarkdown document.}
 }
 \value{
 An invisible \linkS4class{rmd_doc} object.

@@ -5,6 +5,10 @@
 #' @description
 #' Inserting new determinations to specimens stored in the database.
 #'
+#' Note that more than one determination at the same date for the same specimen
+#' are not allowed and this will be checked before inserting new determinations.
+#' You can override this by setting `'compare = TRUE'`
+#'
 #' @param db Connections to the database as [PostgreSQLConnection-class].
 #' @param df A data frame containing the information to be appended in the
 #'     determination history of the specimen. This data frame must contain
@@ -13,6 +17,12 @@
 #'     (name of the taxonomic list applied to the update), **det** (name of the
 #'     person that determined the species), and **det_date** (date of
 #'     determination as [Date][as.Date]).
+#' @param compare Logical value indicating whether the determinations to be
+#'     inserted should be compared with the input data frame or not (by default,
+#'     not). If determinations for the same specimen at the same date are
+#'     suppossed to be inserted in the database, they will be skipped.
+#'     Note that duplicates in the input data frame will not be solved by this
+#'     setting.
 #' @param ... Further arguments passed among methods (not yet used).
 #'
 #' @return SQL commands will be executed.
@@ -38,7 +48,7 @@ setMethod(
     db = "PostgreSQLConnection",
     df = "data.frame"
   ),
-  function(db, df, ...) {
+  function(db, df, compare = FALSE, ...) {
     col_names <- c("spec_id", "taxon_usage_id", "taxonomy", "det", "det_date")
     # Cross-checks
     if (!all(col_names %in% names(df))) {
@@ -51,6 +61,50 @@ setMethod(
     if (class(df$det_date) != "Date") {
       stop("Class 'Date' for 'det_date' in 'df' is mandatory.")
     }
+    # Skipping duplicated entries by comparing input and database
+    query <- paste(
+      "select spec_id,det_date",
+      "from specimens.history",
+      paste0(
+        "where spec_id in (", paste0(unique(df$spec_id), collapse = ","),
+        ")"
+      )
+    )
+    in_db <- dbGetQuery(db, query)
+    if (compare) {
+      N <- nrow(df)
+      df <- df[!with(df, paste(spec_id, det_date, sep = "_")) %in%
+        with(in_db, paste(spec_id, det_date, sep = "_")), ]
+      message(paste(N - nrow(df), "duplicated determinations were skipped."))
+    }
+    # No duplicates in input
+    dupl <- df[duplicated(df[, c("spec_id", "det_date")]), ]
+    if (nrow(dupl) > 0) {
+      print(dupl)
+      stop(paste0(
+        "The displayed entry is a duplicate.\n",
+        "Only one determination per day is allowed ",
+        "for the same specimen."
+      ))
+    }
+    # No duplicates considering database
+    dupl <- df[with(df, paste(spec_id, det_date, sep = "_")) %in%
+      with(in_db, paste(spec_id, det_date, sep = "_")), ]
+    if (nrow(dupl) > 0) {
+      print(dupl)
+      stop(paste0(
+        "The displayed entry is conflicting with a deterimantion ",
+        "in the database.\n",
+        "Only one determination per day is allowed ",
+        "for the same specimen."
+      ))
+    }
+    # Append collection number
+    query <- paste("select coll_nr,spec_id",
+        "from specimens.specimens",
+        paste0("where spec_id in (", paste0(unique(df$spec_id), collapse = ","),
+            ")"))
+    df <- merge(df, dbGetQuery(db, query))
     # Retrieve names
     query <- paste(
       "select taxon_usage_id,usage_name,author_name",

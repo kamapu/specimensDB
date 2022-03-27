@@ -25,6 +25,7 @@
 #' @rdname read_spec
 #'
 <<<<<<< HEAD
+<<<<<<< HEAD
 #' @exportMethod read_spec
 setGeneric(
   "read_spec",
@@ -40,8 +41,16 @@ read_spec <- function(db, ...) {
 }
 
 >>>>>>> refs/heads/devel
+=======
+#' @export
+read_spec <- function(db, ...) {
+  UseMethod("read_spec", db)
+}
+
+>>>>>>> refs/heads/devel
 
 #' @rdname read_spec
+<<<<<<< HEAD
 <<<<<<< HEAD
 #'
 #' @aliases read_spec,PostgreSQLConnection-method
@@ -88,6 +97,16 @@ setMethod(
     # Extract determined vouchers
     message("OK\nImporting taxonomic information ... ", appendLF = FALSE)
     Det <- dbGetQuery(db, paste(
+=======
+#' @aliases read_spec,PostgreSQLConnection-method
+#' @method read_spec PostgreSQLConnection
+#' @export
+read_spec.PostgreSQLConnection <- function(db, adm, bulk, ...) {
+  # Main table
+  message("Importing main tables ... ", appendLF = FALSE)
+  if (missing(bulk)) {
+    Coll <- st_read(db, query = paste(
+>>>>>>> refs/heads/devel
 =======
 #' @aliases read_spec,PostgreSQLConnection-method
 #' @method read_spec PostgreSQLConnection
@@ -155,6 +174,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, ...) {
       paste0(tax_names$taxon_usage_id, collapse = ","), ")"
     )
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Get genus
     Det$genus <- dissect_name(Det$taxon_name, repaste = 1)
     # Get families
@@ -165,6 +185,25 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, ...) {
         "where taxon_concept_id in (",
         paste0(unique(tax_names$taxon_concept_id), collapse = ","), ")"
       )
+=======
+  )
+  tax_names <- merge(tax_names, dbGetQuery(db, query),
+    all = TRUE,
+    sort = FALSE
+  )
+  Det <- merge(Det, tax_names[, c("tax_id", "taxon_name", "taxon_author")],
+    all = TRUE, sort = FALSE
+  )
+  # Get genus
+  Det$genus <- dissect_name(Det$taxon_name, repaste = 1)
+  # Get families
+  Levels <- dbGetQuery(db, "select * from plant_taxonomy.taxon_levels")
+  query <- paste(
+    "select *", "from plant_taxonomy.taxon_concepts",
+    paste0(
+      "where taxon_concept_id in (",
+      paste0(unique(tax_names$taxon_concept_id), collapse = ","), ")"
+>>>>>>> refs/heads/devel
 =======
   )
   tax_names <- merge(tax_names, dbGetQuery(db, query),
@@ -252,6 +291,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, ...) {
       paste0(Families$taxon_usage_id, collapse = ","), ")"
     )
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Get country codes
     Countries_map <- st_read(db, query = paste(
       "select *",
@@ -273,6 +313,8 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, ...) {
         Coll[[i]] <- gadm[[i]][st_nearest_feature(Coll, gadm)]
       }
 =======
+=======
+>>>>>>> refs/heads/devel
   )
   Families <- merge(Families, dbGetQuery(db, query))
   TAX$family_name <- with(Families, usage_name[match(

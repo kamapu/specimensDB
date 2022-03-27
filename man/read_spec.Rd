@@ -3,6 +3,10 @@
 \name{read_spec}
 \alias{read_spec}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+\alias{read_spec.PostgreSQLConnection}
+>>>>>>> refs/heads/devel
 =======
 \alias{read_spec.PostgreSQLConnection}
 >>>>>>> refs/heads/devel
@@ -12,7 +16,11 @@
 read_spec(db, ...)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 \S4method{read_spec}{PostgreSQLConnection}(db, adm, bulk, ...)
+=======
+\method{read_spec}{PostgreSQLConnection}(db, adm, bulk, ...)
+>>>>>>> refs/heads/devel
 =======
 \method{read_spec}{PostgreSQLConnection}(db, adm, bulk, ...)
 >>>>>>> refs/heads/devel

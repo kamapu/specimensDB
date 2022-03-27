@@ -19,6 +19,10 @@ importFrom(sf,st_drop_geometry)
 importFrom(sf,st_nearest_feature)
 importFrom(sf,st_read)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+importFrom(specimens,as_data.frame)
+>>>>>>> refs/heads/devel
 =======
 importFrom(specimens,as_data.frame)
 >>>>>>> refs/heads/devel

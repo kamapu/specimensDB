@@ -43,7 +43,7 @@ new_coll(db, sf, 5)
 new_coll(db, sf, 2)
 
 # Cross-check
-SP <- read_spec(conn, bulk = 2)
+SP <- read_spec(db, bulk = 2)
 tail(SP@collections)
 summary(subset(SP, coll_nr %in%
             SP@collections$coll_nr[nrow(SP@collections) - c(0:2)]))
@@ -56,7 +56,7 @@ do_restore(dbname = DB,
 # 1. Existing bulk
 new_coll(db, sf, "Patagonian Wetlands 2012")
 
-# 2. Working fine
+# 2. Creating a new bulk
 new_coll(db, sf, "A very new project")
 
 # Cross-check
@@ -65,28 +65,11 @@ tail(SP@collections)
 summary(subset(SP, coll_nr %in%
             SP@collections$coll_nr[nrow(SP@collections) - c(0:2)]))
 
-SP <- read_spec(conn, bulk = 4)
+SP <- read_spec(db, bulk = 4)
 summary(SP)
-
-
 
 # Refresh database
 do_restore(dbname = DB,
     user = "miguel",
     filepath = file.path("../../db-dumps/00_dumps", DB),
     path_psql = "/usr/bin")
-
-
-db = conn
-bulk = 4
-
-
-
-Test <- new("specimens",
-    collections = Coll, specimens = Spec,
-    history = Det
-)
-
-
-Test
-

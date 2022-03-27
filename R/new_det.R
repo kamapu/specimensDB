@@ -152,6 +152,6 @@ setMethod(
       )
     }
     pgInsert(db, c("specimens", "history"), Names, partial.match = TRUE)
-    message("DONE!")
+    message("\nDONE!")
   }
 )

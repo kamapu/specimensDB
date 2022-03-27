@@ -29,7 +29,6 @@ read_spec <- function(db, ...) {
   UseMethod("read_spec", db)
 }
 
-
 #' @rdname read_spec
 #' @aliases read_spec,PostgreSQLConnection-method
 #' @method read_spec PostgreSQLConnection
@@ -238,6 +237,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, ...) {
       Coll[[i]] <- gadm[[i]][st_nearest_feature(Coll, gadm)]
     }
   }
+  message("DONE!")
   return(new("specimens",
     collections = Coll, specimens = Spec,
     history = Det

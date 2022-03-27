@@ -65,7 +65,7 @@ setMethod(
     )))
     new_ids <- new_ids[!new_ids %in% old_ids]
     pgInsert(db, c("specimens", "specimens"), data.frame(coll_nr = new_ids))
-    message("DONE!")
+    message("\nDONE!")
   }
 )
 

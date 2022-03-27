@@ -40,30 +40,10 @@ split_spec(db, 970, 3, herbarium = "FB")
 SP <- read_spec(db, bulk = 2)
 summary(SP, 1565)
 
-SP2 <- subset(SP, coll_nr == 1565)
+subset(SP, coll_nr == 1565)@specimens
 
-
-library(rpostgis)
-
-spec_id = 970
-add = 3
-new_cols = list()
-
-
-
-
-
-
-### summary
-object <- SP2
-format = "%d.%m.%Y"
-
-
-
-
-
-
-
-
-
-
+# Refresh database
+do_restore(dbname = DB,
+    user = "miguel",
+    filepath = file.path("../../db-dumps/00_dumps", DB),
+    path_psql = "/usr/bin")

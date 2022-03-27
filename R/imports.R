@@ -1,4 +1,4 @@
-#' @importFrom methods new setOldClass
+#' @importFrom methods as new setOldClass
 #' @importFrom DBI dbGetQuery
 #' @importFrom sf st_coordinates st_drop_geometry st_nearest_feature st_read
 #' @importFrom taxlist replace_x dissect_name

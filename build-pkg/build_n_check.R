@@ -20,10 +20,8 @@ Folder <- "build-pkg"
 Files <- list.files(Folder, ".tar.gz|.pdf")
 unlink(file.path(Folder, Files))
 
-# Re-build package and manual
+# Build package and check
 pkg_loc <- build(path = Folder)
-
-# common check
 check_built(path = pkg_loc)
 
 # a posteriori

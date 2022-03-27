@@ -1,6 +1,6 @@
-#' @name update_det
+#' @name new_det
 #'
-#' @title Updating determinations of specimens.
+#' @title Add new determinations to specimens.
 #'
 #' @description
 #' Inserting new determinations to specimens stored in the database.
@@ -28,22 +28,21 @@
 #' @return SQL commands will be executed.
 #'
 #' @author Miguel Alvarez \email{kamapu@@posteo.com}
-
-#' @rdname update_det
 #'
-#' @exportMethod update_det
+#' @rdname new_det
+#'
+#' @exportMethod new_det
 setGeneric(
-  "update_det",
+  "new_det",
   function(db, df, ...) {
-    standardGeneric("update_det")
+    standardGeneric("new_det")
   }
 )
 
-#' @rdname update_det
-#'
-#' @aliases update_det,PostgreSQLConnection,data.frame-method
+#' @rdname new_det
+#' @aliases new_det,PostgreSQLConnection,data.frame-method
 setMethod(
-  "update_det",
+  "new_det",
   signature(
     db = "PostgreSQLConnection",
     df = "data.frame"
@@ -100,10 +99,14 @@ setMethod(
       ))
     }
     # Append collection number
-    query <- paste("select coll_nr,spec_id",
-        "from specimens.specimens",
-        paste0("where spec_id in (", paste0(unique(df$spec_id), collapse = ","),
-            ")"))
+    query <- paste(
+      "select coll_nr,spec_id",
+      "from specimens.specimens",
+      paste0(
+        "where spec_id in (", paste0(unique(df$spec_id), collapse = ","),
+        ")"
+      )
+    )
     df <- merge(df, dbGetQuery(db, query))
     # Retrieve names
     query <- paste(
@@ -149,5 +152,6 @@ setMethod(
       )
     }
     pgInsert(db, c("specimens", "history"), Names, partial.match = TRUE)
+    message("\nDONE!")
   }
 )

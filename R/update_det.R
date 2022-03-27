@@ -99,6 +99,12 @@ setMethod(
         "for the same specimen."
       ))
     }
+    # Append collection number
+    query <- paste("select coll_nr,spec_id",
+        "from specimens.specimens",
+        paste0("where spec_id in (", paste0(unique(df$spec_id), collapse = ","),
+            ")"))
+    df <- merge(df, dbGetQuery(db, query))
     # Retrieve names
     query <- paste(
       "select taxon_usage_id,usage_name,author_name",

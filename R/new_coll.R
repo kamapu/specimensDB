@@ -50,7 +50,7 @@ setMethod(
     if (length(unlist(dbGetQuery(db, query))) < 1) {
       stop("The target 'bulk' does not exist in the database.")
     }
-    sf <- as(sf, "Spatial")
+    sf <- as(sf[ , names(sf) != "coll_nr"], "Spatial")
     # Collect IDs and insert new entries
     old_ids <- unlist(dbGetQuery(db, paste(
       "select coll_nr",
@@ -78,7 +78,6 @@ setMethod(
   ),
   function(db, sf, bulk, ...) new_coll(db, sf, as.integer(bulk), ...)
 )
-
 
 #' @rdname new_coll
 #' @aliases new_coll,PostgreSQLConnection,data.frame,character-method

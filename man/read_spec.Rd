@@ -8,7 +8,7 @@
 \usage{
 read_spec(db, ...)
 
-\method{read_spec}{PostgreSQLConnection}(db, adm, bulk, ...)
+\method{read_spec}{PostgreSQLConnection}(db, adm, bulk, get_coords = TRUE, ...)
 }
 \arguments{
 \item{db}{Connection to the database as \linkS4class{PostgreSQLConnection}.}
@@ -21,6 +21,11 @@ will be included in the output.}
 
 \item{bulk}{Integer vector including the ID's of the requested bulks
 (campaigns or projects).}
+
+\item{get_coords}{Logical values indicating whether formatted coordinates
+should be extracted from geometry or not.The default is
+\code{'get_coords = TRUE'} but it may cause an error if some cells in the
+geometry are empty.}
 }
 \value{
 An S3 object of class \code{specimens}.

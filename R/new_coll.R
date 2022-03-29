@@ -38,6 +38,7 @@ setMethod(
     bulk = "integer"
   ),
   function(db, sf, bulk, ...) {
+<<<<<<< HEAD
     # TODO: Define and check mandatory columns (excludes coll_nr)
     if (length(bulk) > 1) {
       warning("Only the first element of 'bulk' will be used.")
@@ -79,6 +80,50 @@ setMethod(
   function(db, sf, bulk, ...) new_coll(db, sf, as.integer(bulk), ...)
 )
 
+=======
+    # In case of a coll_nr column
+    sf <- sf[, names(sf) != "coll_nr"]
+    # TODO: Define and check mandatory columns (excludes coll_nr)
+    if (length(bulk) > 1) {
+      warning("Only the first element of 'bulk' will be used.")
+    }
+    sf$bulk <- bulk[1]
+    query <- paste(
+      "select bulk", "from specimens.projects",
+      paste("where bulk =", bulk[1])
+    )
+    if (length(unlist(dbGetQuery(db, query))) < 1) {
+      stop("The target 'bulk' does not exist in the database.")
+    }
+    sf <- as(sf, "Spatial")
+    # Collect IDs and insert new entries
+    old_ids <- unlist(dbGetQuery(db, paste(
+      "select coll_nr",
+      "from specimens.collections"
+    )))
+    pgInsert(db, c("specimens", "collections"), sf, "geom_point",
+      partial.match = TRUE
+    )
+    new_ids <- unlist(dbGetQuery(db, paste(
+      "select coll_nr",
+      "from specimens.collections"
+    )))
+    new_ids <- new_ids[!new_ids %in% old_ids]
+    pgInsert(db, c("specimens", "specimens"), data.frame(coll_nr = new_ids))
+    message("\nDONE!")
+  }
+)
+
+#' @rdname new_coll
+#' @aliases new_coll,PostgreSQLConnection,data.frame,numeric-method
+setMethod(
+  "new_coll", signature(
+    db = "PostgreSQLConnection", sf = "sf",
+    bulk = "numeric"
+  ),
+  function(db, sf, bulk, ...) new_coll(db, sf, as.integer(bulk), ...)
+)
+>>>>>>> refs/heads/devel
 
 #' @rdname new_coll
 #' @aliases new_coll,PostgreSQLConnection,data.frame,character-method

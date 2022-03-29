@@ -16,12 +16,16 @@
 #'     will be included in the output.
 #' @param bulk Integer vector including the ID's of the requested bulks
 #'     (campaigns or projects).
+#' @param get_coords Logical values indicating whether formatted coordinates
+#'     should be extracted from geometry or not.The default is
+#'     `'get_coords = TRUE'` but it may cause an error if some cells in the
+#'     geometry are empty.
 #' @param ... Further arguments passed among methods (not yet used).
 #'
 #' @return An S3 object of class `specimens`.
 #'
 #' @author Miguel Alvarez \email{kamapu@@posteo.com}
-
+#'
 #' @rdname read_spec
 #'
 #' @export
@@ -33,7 +37,8 @@ read_spec <- function(db, ...) {
 #' @aliases read_spec,PostgreSQLConnection-method
 #' @method read_spec PostgreSQLConnection
 #' @export
-read_spec.PostgreSQLConnection <- function(db, adm, bulk, ...) {
+read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
+                                           ...) {
   # Main table
   message("Importing main tables ... ", appendLF = FALSE)
   if (missing(bulk)) {
@@ -53,7 +58,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, ...) {
     query <- paste(
       "select *",
       "from specimens.projects",
-      paste0("where bulk in (", paste0(unique(Coll$bulk),
+      paste0("where bulk in (", paste0(unique(Coll$bulk[!is.na(Coll$bulk)]),
         collapse = ","
       ), ");")
     )
@@ -202,20 +207,22 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, ...) {
   }
   # Coordinates for Bonn
   message("OK\nImporting geographic information ... ", appendLF = FALSE)
-  n_digits <- 4
-  Coords <- st_coordinates(Coll)
-  c_suffix <- cbind(
-    c("E", "W")[match(Coords[, 1] >= 0, c(TRUE, FALSE))],
-    c("N", "S")[match(Coords[, 2] >= 0, c(TRUE, FALSE))]
-  )
-  Coll$coord_bonn <- paste(
-    c_suffix[, 2], format(round(Coords[, 2],
-      digits = n_digits
-    ), nsmall = n_digits),
-    c_suffix[, 1], format(round(Coords[, 1], digits = n_digits),
-      nsmall = n_digits
+  if (get_coords) {
+    n_digits <- 4
+    Coords <- st_coordinates(Coll)
+    c_suffix <- cbind(
+      c("E", "W")[match(Coords[, 1] >= 0, c(TRUE, FALSE))],
+      c("N", "S")[match(Coords[, 2] >= 0, c(TRUE, FALSE))]
     )
-  )
+    Coll$coord_bonn <- paste(
+      c_suffix[, 2], format(round(Coords[, 2],
+        digits = n_digits
+      ), nsmall = n_digits),
+      c_suffix[, 1], format(round(Coords[, 1], digits = n_digits),
+        nsmall = n_digits
+      )
+    )
+  }
   # Get country codes
   Countries_map <- st_read(db, query = paste(
     "select *",

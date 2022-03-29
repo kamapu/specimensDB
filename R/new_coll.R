@@ -38,6 +38,8 @@ setMethod(
     bulk = "integer"
   ),
   function(db, sf, bulk, ...) {
+    # In case of a coll_nr column
+    sf <- sf[, names(sf) != "coll_nr"]
     # TODO: Define and check mandatory columns (excludes coll_nr)
     if (length(bulk) > 1) {
       warning("Only the first element of 'bulk' will be used.")
@@ -50,7 +52,7 @@ setMethod(
     if (length(unlist(dbGetQuery(db, query))) < 1) {
       stop("The target 'bulk' does not exist in the database.")
     }
-    sf <- as(sf[ , names(sf) != "coll_nr"], "Spatial")
+    sf <- as(sf, "Spatial")
     # Collect IDs and insert new entries
     old_ids <- unlist(dbGetQuery(db, paste(
       "select coll_nr",

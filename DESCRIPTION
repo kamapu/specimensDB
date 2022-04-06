@@ -10,17 +10,18 @@ Depends:
 	specimens
 Imports:
     DBI,
+    leaflet,
+    magrittr,
+    mapview,
 	methods,
 	rpostgis,
 	RPostgreSQL,
     sf,
     taxlist,
     utils,
-    vegtableDB,
     yamlme
 Remotes:
-	github::kamapu/specimens,
-    github::kamapu/vegtableDB
+	github::kamapu/specimens
 Suggests:
 	rmarkdown,
 	testthat

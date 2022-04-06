@@ -1,0 +1,17 @@
+---
+title: Churo Survey 2010
+ouput: pdf_document
+header-includes: 
+  - \sffamily
+---
+
+# Description
+
+Rapid survey done in cropland fields (locally known as “shambas”) in Kenya on 12-12-2010 in the context of the RCR project (Resilience, Collapse and Reorganisation in Social-Ecological Systems of African Savannas). The survey was done in a transect between Loruk, Lake Baringo at around 1000 m a.s.l., and Churo, near to the Laikipia Plateau at around 1700 m a.s.l. The collection focussed on weeds and ruderal plants growing in the cultivated fields.
+
+# Statistics
+
+# Geographic Distribution
+
+![](/tmp/Rtmp9mGiU7/file215e6138d84a.png)
+

@@ -1,0 +1,30 @@
+---
+title: Here the name
+output: pdf_document
+header-includes:
+  - \sffamily
+---
+
+`r Descr["description"]`.
+
+```{r}
+m <- leaflet(Spec@collections) %>%
+    #addTiles() %>%
+    addProviderTiles("OpenTopoMap") %>%
+    addScaleBar(position = "bottomleft") %>%
+    addCircleMarkers(
+        color = "red",
+        fillColor = "yellow",
+        stroke = TRUE,
+        weight = 2,
+        opacity = 1,
+        fillOpacity = 0.5,
+        radius = 6) %>%
+    addSimpleGraticule(interval = 5) %>%
+    ## addGraticule(interval = 5) %>%
+    addMiniMap(width = 170, height = 170)
+
+m
+
+mapshot(m, file = "images/map-sudamerica.png", vwidth = 700, vheight = 600)
+```

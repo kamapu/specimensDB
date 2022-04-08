@@ -46,7 +46,7 @@ description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
                                                    header_includes = "- \\sffamily",
                                                    ...,
                                                    date_format = "%d.%m.%Y",
-                                                   p_tiles = "OpenTopoMap",
+                                                   p_tiles = "OpenStreetMap",
                                                    zoomLevelFixed = 5,
                                                    vwidth = 1200, vheight = 500,
                                                    render_args = list()) {

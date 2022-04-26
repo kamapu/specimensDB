@@ -18,6 +18,8 @@
 #'     for 'header-includes' in the yaml header.
 #' @param date_format A character value indicating the format of displayed
 #'     collection dates.
+#' @param p_tiles A character vector indicating the name of provider tiles used
+#'     as background map. It is passed to [addProviderTiles()].
 #' @param zoomLevelFixed An integer value passed to [addMiniMap()].
 #' @param vwidth,vheight An integer value each, passed to [mapshot()].
 #' @param render_args A named list with arguments passed to [render_rmd()].
@@ -40,9 +42,14 @@ description_sheet <- function(db, ...) {
 #' @export
 description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
                                                    output_file,
-                                                   output = "pdf_document", header_includes = "- \\sffamily", ...,
+                                                   output = "pdf_document",
+                                                   header_includes = "- \\sffamily",
+                                                   ...,
                                                    date_format = "%d.%m.%Y",
-                                                   zoomLevelFixed = 5, vwidth = 1200, vheight = 500, render_args = list()) {
+                                                   p_tiles = "OpenStreetMap",
+                                                   zoomLevelFixed = 5,
+                                                   vwidth = 1200, vheight = 500,
+                                                   render_args = list()) {
   Spec <- read_spec(db, bulk = bulk[1])
   query <- paste(
     "select *", "from specimens.projects",
@@ -51,7 +58,7 @@ description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
   Descr <- unlist(dbGetQuery(db, query))
   map_file <- tempfile(tmpdir = wd, fileext = ".png")
   Map <- leaflet(Spec@collections) %>%
-    addProviderTiles("OpenTopoMap") %>%
+    addProviderTiles(p_tiles) %>%
     addScaleBar(position = "topright") %>%
     addCircleMarkers(
       color = "red",

@@ -17,6 +17,7 @@ description_sheet(db, ...)
   header_includes = "- \\\\sffamily",
   ...,
   date_format = "\%d.\%m.\%Y",
+  p_tiles = "OpenStreetMap",
   zoomLevelFixed = 5,
   vwidth = 1200,
   vheight = 500,
@@ -45,6 +46,9 @@ for 'header-includes' in the yaml header.}
 
 \item{date_format}{A character value indicating the format of displayed
 collection dates.}
+
+\item{p_tiles}{A character vector indicating the name of provider tiles used
+as background map. It is passed to \code{\link[=addProviderTiles]{addProviderTiles()}}.}
 
 \item{zoomLevelFixed}{An integer value passed to \code{\link[=addMiniMap]{addMiniMap()}}.}
 

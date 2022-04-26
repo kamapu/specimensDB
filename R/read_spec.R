@@ -161,7 +161,8 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
           "from plant_taxonomy.taxon_concepts",
           paste0(
             "where taxon_concept_id in (",
-            paste0(Parent$parent_id, collapse = ","), ")"
+            paste0(Parent$parent_id[!is.na(Parent$parent_id)], collapse = ","),
+            ")"
           )
         )
         Parent <- merge(Parent, dbGetQuery(db, query), all = TRUE, sort = FALSE)

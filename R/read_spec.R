@@ -174,7 +174,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
       "from plant_taxonomy.names2concepts",
       paste0(
         "where taxon_concept_id in (",
-        paste0(TAX$family, collapse = ","), ")"
+        paste0(TAX$family[!is.na(TAX$family)], collapse = ","), ")"
       ),
       "and name_status = 'accepted'"
     )

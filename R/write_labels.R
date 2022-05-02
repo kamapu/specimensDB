@@ -55,7 +55,6 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
                                    ),
                                    classoption = "a4paper", ...) {
   x <- as_data.frame(x)
-  x$taxon_name[is.na(x$taxon_name)] <- ""
   # get rid of extension
   if (substr(
     output_file, nchar(output_file) - 3,
@@ -73,7 +72,7 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
   # Get rid of NA's
   for (i in names(x)) {
     x[[i]] <- paste(x[[i]])
-    x[[i]][x[[i]] == "NA"] <- ""
+    x[[i]][x[[i]] %in% c("NA", "*NA*")] <- ""
   }
   # Write label body
   Body <- with(x, cbind(

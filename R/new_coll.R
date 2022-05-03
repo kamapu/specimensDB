@@ -44,6 +44,13 @@ setMethod(
     if (length(bulk) > 1) {
       warning("Only the first element of 'bulk' will be used.")
     }
+    if (!"field_nr" %in% names(sf)) {
+      message("Column 'field_nr' automatically added to 'sf'.")
+      sf$field_nr <- 1:nrow(sf)
+    }
+    if (any(duplicated(sf$field_nr))) {
+      stop("Duplicated values in column 'field_nr' in 'sf' are not allowed.")
+    }
     sf$bulk <- bulk[1]
     query <- paste(
       "select bulk", "from specimens.projects",
@@ -61,12 +68,14 @@ setMethod(
     pgInsert(db, c("specimens", "collections"), sf, "geom_point",
       partial.match = TRUE
     )
-    new_ids <- unlist(dbGetQuery(db, paste(
-      "select coll_nr",
-      "from specimens.collections"
-    )))
-    new_ids <- new_ids[!new_ids %in% old_ids]
-    pgInsert(db, c("specimens", "specimens"), data.frame(coll_nr = new_ids))
+    sf <- sf@data
+    new_ids <- dbGetQuery(db, paste(
+      "select coll_nr,field_nr",
+      "from specimens.collections",
+      paste0("where coll_nr not in (", paste0(old_ids, collapse = ","), ")")
+    ))
+    sf$coll_nr <- with(new_ids, coll_nr[match(sf$field_nr, field_nr)])
+    pgInsert(db, c("specimens", "specimens"), sf, partial.match = TRUE)
     message("\nDONE!")
   }
 )

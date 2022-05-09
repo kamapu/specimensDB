@@ -57,6 +57,7 @@ setMethod(
         paste0(col_names, collapse = "' '"), "'."
       ))
     }
+    df <- df[ , col_names]
     if (class(df$det_date) != "Date") {
       stop("Class 'Date' for 'det_date' in 'df' is mandatory.")
     }

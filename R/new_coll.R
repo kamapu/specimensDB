@@ -39,7 +39,7 @@ setMethod(
   ),
   function(db, sf, bulk, ...) {
     # In case of a coll_nr column
-    sf <- sf[, names(sf) != "coll_nr"]
+    sf <- sf[, !names(sf) %in% c("coll_nr", "bulk", "spec_id")]
     # TODO: Define and check mandatory columns (excludes coll_nr)
     if (length(bulk) > 1) {
       warning("Only the first element of 'bulk' will be used.")

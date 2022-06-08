@@ -32,4 +32,4 @@ Roxygen: list(markdown = TRUE)
 License: file LICENSE
 URL: https://github.com/kamapu/specimensDB
 BugReports: https://github.com/kamapu/specimensDB/issues
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0

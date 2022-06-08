@@ -235,11 +235,13 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
   )]
   # Import GADM
   if (!missing(adm)) {
-    gadm <- st_read(adm, query = paste0(
-      "select name_0,name_1,name_2,geom\n",
-      "from gadm\n",
-      "where gid_0 in ('",
-      paste0(unique(Coll$country, collapse = "','"), "');\n")
+    gadm <- st_read(adm, query = paste(
+      "select name_0,name_1,name_2,geom",
+      "from gadm",
+      paste0(
+        "where gid_0 in ('",
+        paste0(unique(Coll$country), collapse = "','"), "')"
+      )
     ))
     for (i in c("name_0", "name_1", "name_2")) {
       Coll[[i]] <- gadm[[i]][st_nearest_feature(Coll, gadm)]

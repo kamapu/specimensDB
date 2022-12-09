@@ -21,7 +21,7 @@ write_envelopes(x, ...)
 \arguments{
 \item{x}{A \linkS4class{specimens} object retrieved by \code{\link[=read_spec]{read_spec()}}.}
 
-\item{...}{Further arguments passed to \code{\link[=write_rmd]{write_rmd()}}. It works only if
+\item{...}{Further arguments passed to \code{\link[=list2rmd_doc]{list2rmd_doc()}}. It works only if
 \code{'merge = TRUE'}.}
 
 \item{output_file}{A character value indicating the name of the file. It may

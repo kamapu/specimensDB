@@ -27,7 +27,7 @@ description_sheet(db, ...)
 \arguments{
 \item{db}{Connection to the database as \linkS4class{PostgreSQLConnection}.}
 
-\item{...}{Further arguments passed to \code{\link[=write_rmd]{write_rmd()}}.}
+\item{...}{Further arguments passed to \code{\link[=list2rmd_doc]{list2rmd_doc()}}.}
 
 \item{bulk}{Integer vector including the ID's of the requested bulks
 (campaigns or projects).}
@@ -38,11 +38,10 @@ Figures and r-markdown files.}
 \item{output_file}{A character value indicating the name of the rendered PDF
 file.}
 
-\item{output}{A character value or a list passed to \code{\link[=write_rmd]{write_rmd()}} and
-included in the yaml header.}
+\item{output}{A character value or a list included in the yaml header.}
 
-\item{header_includes}{A character value or a list passed to \code{\link[=write_rmd]{write_rmd()}}
-for 'header-includes' in the yaml header.}
+\item{header_includes}{A character value or a list for 'header-includes' in
+the yaml header.}
 
 \item{date_format}{A character value indicating the format of displayed
 collection dates.}

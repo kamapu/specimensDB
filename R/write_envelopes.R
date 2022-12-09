@@ -22,7 +22,7 @@
 #'     should be drawn or not.
 #' @param classoption A character value to be inserted as 'classoption' in the
 #'     yaml head for the Rmarkdown document.
-#' @param ... Further arguments passed to [write_rmd()]. It works only if
+#' @param ... Further arguments passed to [list2rmd_doc()]. It works only if
 #'     `'merge = TRUE'`.
 #'
 #' @return
@@ -111,7 +111,7 @@ write_envelopes.specimens <- function(x, output_file,
     ), "footskip=0mm"), collapse = ",")
   }
   # Produce single files
-  Labels <- write_rmd(
+  Labels <- as(list(
     geometry = geometry,
     "header-includes" = c(
       # "- \\usepackage{showframe}",
@@ -121,7 +121,7 @@ write_envelopes.specimens <- function(x, output_file,
     output = "pdf_document",
     body = txt_body(as.vector(t(Body))),
     classoption = classoption
-  )
+  ), "rmd_doc")
   out_file <- tempfile()
   render_rmd(Labels, output_file = out_file)
   file.copy(

@@ -13,19 +13,19 @@ render_desc(db, ...)
 \arguments{
 \item{db}{Connection to the database as \linkS4class{PostgreSQLConnection}.}
 
-\item{...}{Further Arguments passed to \code{\link[=write_rmd]{write_rmd()}}.}
+\item{...}{Further Arguments passed to \code{\link[=list2rmd_doc]{list2rmd_doc()}}.}
 
 \item{bulk}{The identifies of the bulk (project) in the database.}
 
 \item{output}{Character value or list with the output settings for the yaml
-head. This is passed to \code{\link[=write_rmd]{write_rmd()}}.}
+head.}
 
 \item{output_file}{Character value with the name and path to the ouput file.
 I is passed to \code{\link[=render_rmd]{render_rmd()}}.}
 }
 \description{
 Producing a PDF file with the description of the bulk (project) using
-\code{\link[=write_rmd]{write_rmd()}} and \code{\link[=render_rmd]{render_rmd()}}.
+\code{\link[=render_rmd]{render_rmd()}}.
 }
 \author{
 Miguel Alvarez \email{kamapu@posteo.com}

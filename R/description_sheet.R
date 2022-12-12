@@ -13,8 +13,6 @@
 #' @param output_file A character value indicating the name of the rendered PDF
 #'     file.
 #' @param output A character value or a list included in the yaml header.
-#' @param header_includes A character value or a list for 'header-includes' in
-#'     the yaml header.
 #' @param date_format A character value indicating the format of displayed
 #'     collection dates.
 #' @param p_tiles A character vector indicating the name of provider tiles used
@@ -42,8 +40,6 @@ description_sheet <- function(db, ...) {
 description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
                                                    output_file,
                                                    output = "pdf_document",
-                                                   header_includes =
-                                                     "- \\sffamily",
                                                    ...,
                                                    date_format = "%d.%m.%Y",
                                                    p_tiles = "OpenStreetMap",
@@ -88,8 +84,9 @@ description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
   Loc <- paste0(Loc, collapse = ", ")
   Loc <- paste0(sum(!is.na(Spec@specimens$herbarium)), " (", Loc, ")")
   Doc <- as(list(
-    title = Descr["project_name"], output = output,
-    "header-includes" = header_includes, body = txt_body(c(
+    title = Descr["project_name"], output = output, body = txt_body(c(
+      "\\sffamily",
+      "",
       "# Description",
       "",
       Descr["description"],

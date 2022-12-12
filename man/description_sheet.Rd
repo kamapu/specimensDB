@@ -14,7 +14,6 @@ description_sheet(db, ...)
   wd = tempdir(),
   output_file,
   output = "pdf_document",
-  header_includes = "- \\\\sffamily",
   ...,
   date_format = "\%d.\%m.\%Y",
   p_tiles = "OpenStreetMap",
@@ -39,9 +38,6 @@ Figures and r-markdown files.}
 file.}
 
 \item{output}{A character value or a list included in the yaml header.}
-
-\item{header_includes}{A character value or a list for 'header-includes' in
-the yaml header.}
 
 \item{date_format}{A character value indicating the format of displayed
 collection dates.}

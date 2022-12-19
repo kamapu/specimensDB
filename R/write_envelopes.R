@@ -9,7 +9,7 @@
 #' the sheet as an envelope.
 #' This may be usually done for collections of Bryophytes.
 #'
-#' @param x A [specimens-class] object retrieved by [read_spec()].
+#' @param x A [specimens-class] object retrieved by [read_specimens()].
 #' @param output_file A character value indicating the name of the file. It may
 #'     include a relative path. This is passed to the homonymous parameter at
 #'     [render_rmd()].
@@ -114,9 +114,8 @@ write_envelopes.specimens <- function(x, output_file,
   Labels <- as(list(
     geometry = geometry,
     "header-includes" = c(
-      # "- \\usepackage{showframe}",
-      "- \\usepackage[english]{babel}",
-      "- \\pagenumbering{gobble}"
+      "\\usepackage[english]{babel}",
+      "\\pagenumbering{gobble}"
     ),
     output = "pdf_document",
     body = txt_body(as.vector(t(Body))),

@@ -19,7 +19,7 @@ write_envelopes(x, ...)
 )
 }
 \arguments{
-\item{x}{A \linkS4class{specimens} object retrieved by \code{\link[=read_spec]{read_spec()}}.}
+\item{x}{A \linkS4class{specimens} object retrieved by \code{\link[=read_specimens]{read_specimens()}}.}
 
 \item{...}{Further arguments passed to \code{\link[=list2rmd_doc]{list2rmd_doc()}}. It works only if
 \code{'merge = TRUE'}.}

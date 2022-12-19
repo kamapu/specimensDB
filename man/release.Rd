@@ -11,7 +11,7 @@ release(x, ...)
 \method{release}{specimens}(x, herb, trans, ...)
 }
 \arguments{
-\item{x}{A \linkS4class{specimens} object retrieved by \code{\link[=read_spec]{read_spec()}}.}
+\item{x}{A \linkS4class{specimens} object retrieved by \code{\link[=read_specimens]{read_specimens()}}.}
 
 \item{...}{Further arguments passed among methods (not in use).}
 
@@ -34,7 +34,7 @@ A data frame with columns sorted and named for release at a respective
 herbarium.
 }
 \description{
-Processing data frame obtained by \code{\link[=read_spec]{read_spec()}} to be released at a
+Processing data frame obtained by \code{\link[=read_specimens]{read_specimens()}} to be released at a
 respective herbarium.
 
 Some herbaria have a template for storage of data.

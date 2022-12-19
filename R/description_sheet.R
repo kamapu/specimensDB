@@ -46,7 +46,7 @@ description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
                                                    zoomLevelFixed = 5,
                                                    vwidth = 1200, vheight = 500,
                                                    render_args = list()) {
-  Spec <- read_spec(db, bulk = bulk[1])
+  Spec <- read_specimens(db, bulk = bulk[1])
   query <- paste(
     "select *", "from specimens.projects",
     paste0("where bulk = ", bulk[1])
@@ -99,11 +99,11 @@ description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
       "",
       paste0("**Collection Period:** ", DAT),
       "",
-      paste0("**Collected Specimens: **", nrow(Spec@specimens)),
+      paste0("**Collected Specimens:** ", nrow(Spec@specimens)),
       "",
-      paste0("**Stored Specimens: **", Loc),
+      paste0("**Stored Specimens:** ", Loc),
       "",
-      paste0("**Disposed Specimens: **", sum(Spec@specimens$gone)),
+      paste0("**Disposed Specimens:** ", sum(Spec@specimens$gone)),
       "",
       "# Geographic Distribution",
       "",

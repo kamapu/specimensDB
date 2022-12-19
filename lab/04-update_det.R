@@ -29,7 +29,7 @@ conn <- connect_db2(DB, user = "miguel")
 new_dets <- read_ods("lab/update-1.ods")
 new_dets$det_date <- as.Date(new_dets$det_date, "%d.%m.%Y")
 
-## Spec <- read_spec(db = conn, adm = conn2, bulk = 2)
+## Spec <- read_specimens(db = conn, adm = conn2, bulk = 2)
 ## saveRDS(Spec, "lab/specimens-v0.rds")
 Spec <- readRDS("lab/specimens-v0.rds")
 

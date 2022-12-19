@@ -7,7 +7,7 @@
 #' @description
 #' Generating labels for vouchers using exported tables.
 #'
-#' @param x A [specimens-class] object retrieved by [read_spec()].
+#' @param x A [specimens-class] object retrieved by [read_specimens()].
 #' @param output_file A character value indicating the name of the file. It may
 #'     include a relative path. This is passed to the homonymous parameter at
 #'     [render_rmd()].
@@ -116,8 +116,8 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
       collapse = ","
     ),
     "header-includes" = c(
-      "- \\usepackage[english]{babel}",
-      "- \\pagenumbering{gobble}"
+      "\\usepackage[english]{babel}",
+      "\\pagenumbering{gobble}"
     ),
     output = "pdf_document",
     body = txt_body(as.vector(t(Body)))
@@ -137,7 +137,8 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
         sep = ","
       ),
       "header-includes" = c(
-        "- \\usepackage{pdfpages}"
+        "\\usepackage[english]{babel}",
+        "\\usepackage{pdfpages}"
       ),
       output = "pdf_document",
       body = paste0(

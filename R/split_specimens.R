@@ -7,6 +7,8 @@
 #' same herbarium or distributed to different locations.
 #' This function duplicates specimens belonging to the same collection.
 #'
+#' The determination history of specimens is inherited by the duplicates.
+#'
 #' @param db Connection to the database as [PostgreSQLConnection-class].
 #' @param schema Character value indicating the name of the database schema
 #'     containing specimens.
@@ -87,18 +89,25 @@ split_specimens.PostgreSQLConnection <- function(db, spec_id, add = 1,
   db_hist <- dbGetQuery(db, query)
   if (nrow(db_hist) > 0) {
     db_hist <- merge(db_spec[, c("spec_id", "new_spec_id")], db_hist)
+    db_hist$spec_id <- db_hist$new_spec_id
+    new_fid <- unlist(dbGetQuery(db, paste(
+      "select max(fid)",
+      paste0("from \"", schema, "\".history")
+    )))
+    db_hist$fid <- new_fid + 1:nrow(db_hist)
   }
   # Replace IDs
   db_spec$spec_id <- db_spec$new_spec_id
-  db_hist$spec_id <- db_hist$new_spec_id
   # Append tables
   dbWriteTable(db, c(schema, "specimens"),
     db_spec[, names(db_spec) != "new_spec_id"],
     append = TRUE, row.names = FALSE
   )
-  dbWriteTable(db, c(schema, "history"),
-    db_hist[, names(db_hist) != "new_spec_id"],
-    append = TRUE, row.names = FALSE
-  )
+  if (nrow(db_hist) > 0) {
+    dbWriteTable(db, c(schema, "history"),
+      db_hist[, names(db_hist) != "new_spec_id"],
+      append = TRUE, row.names = FALSE
+    )
+  }
   message("\nDONE!")
 }

@@ -35,6 +35,8 @@ containing specimens.}
 Single collections may be split into multiple specimens, either stored in the
 same herbarium or distributed to different locations.
 This function duplicates specimens belonging to the same collection.
+
+The determination history of specimens is inherited by the duplicates.
 }
 \author{
 Miguel Alvarez \email{kamapu@posteo.com}

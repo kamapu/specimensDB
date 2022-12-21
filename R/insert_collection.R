@@ -1,4 +1,4 @@
-#' @name new_coll
+#' @name insert_collection
 #'
 #' @title Insert new collections to database.
 #'
@@ -20,20 +20,20 @@
 #'
 #' @author Miguel Alvarez \email{kamapu@@posteo.com}
 #'
-#' @rdname new_coll
+#' @rdname insert_collection
 #'
-#' @exportMethod new_coll
+#' @exportMethod insert_collection
 setGeneric(
-  "new_coll",
+  "insert_collection",
   function(db, sf, bulk, ...) {
-    standardGeneric("new_coll")
+    standardGeneric("insert_collection")
   }
 )
 
-#' @rdname new_coll
-#' @aliases new_coll,PostgreSQLConnection,data.frame,integer-method
+#' @rdname insert_collection
+#' @aliases insert_collection,PostgreSQLConnection,data.frame,integer-method
 setMethod(
-  "new_coll", signature(
+  "insert_collection", signature(
     db = "PostgreSQLConnection", sf = "sf",
     bulk = "integer"
   ),
@@ -80,20 +80,20 @@ setMethod(
   }
 )
 
-#' @rdname new_coll
-#' @aliases new_coll,PostgreSQLConnection,data.frame,numeric-method
+#' @rdname insert_collection
+#' @aliases insert_collection,PostgreSQLConnection,data.frame,numeric-method
 setMethod(
-  "new_coll", signature(
+  "insert_collection", signature(
     db = "PostgreSQLConnection", sf = "sf",
     bulk = "numeric"
   ),
-  function(db, sf, bulk, ...) new_coll(db, sf, as.integer(bulk), ...)
+  function(db, sf, bulk, ...) insert_collection(db, sf, as.integer(bulk), ...)
 )
 
-#' @rdname new_coll
-#' @aliases new_coll,PostgreSQLConnection,data.frame,character-method
+#' @rdname insert_collection
+#' @aliases insert_collection,PostgreSQLConnection,data.frame,character-method
 setMethod(
-  "new_coll", signature(
+  "insert_collection", signature(
     db = "PostgreSQLConnection", sf = "sf",
     bulk = "character"
   ),
@@ -130,6 +130,6 @@ setMethod(
         "'.\n"
       ))
     }
-    new_coll(db, sf, bulk_id, ...)
+    insert_collection(db, sf, bulk_id, ...)
   }
 )

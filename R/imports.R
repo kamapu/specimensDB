@@ -1,4 +1,4 @@
-#' @importFrom DBI dbGetQuery
+#' @importFrom DBI dbGetQuery dbWriteTable
 #' @importFrom leaflet addCircleMarkers addMiniMap addProviderTiles addScaleBar
 #'     leaflet
 #' @importFrom magrittr %>%
@@ -10,6 +10,7 @@
 #' @importFrom utils askYesNo
 #' @importClassesFrom specimens specimens
 #' @importClassesFrom RPostgreSQL PostgreSQLConnection
+#' @import divDB
 #' @import specimens
 #' @import yamlme
 NULL

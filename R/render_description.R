@@ -1,4 +1,4 @@
-#' @name render_desc
+#' @name render_description
 #'
 #' @title Rendering bulk description.
 #'
@@ -16,19 +16,19 @@
 #'
 #' @author Miguel Alvarez \email{kamapu@@posteo.com}
 #'
-#' @rdname render_desc
+#' @rdname render_description
 #'
 #' @export
-render_desc <- function(db, ...) {
-  UseMethod("render_desc", db)
+render_description <- function(db, ...) {
+  UseMethod("render_description", db)
 }
 
-#' @rdname render_desc
-#' @aliases render_desc,PostgreSQLConnection-method
-#' @method render_desc PostgreSQLConnection
+#' @rdname render_description
+#' @aliases render_description,PostgreSQLConnection-method
+#' @method render_description PostgreSQLConnection
 #' @export
-render_desc.PostgreSQLConnection <- function(db, bulk, output = "pdf_document",
-                                             output_file, ...) {
+render_description.PostgreSQLConnection <- function(db, bulk, output = "pdf_document",
+                                                    output_file, ...) {
   query <- paste(
     "select project_name,description", "from specimens.projects",
     paste("where bulk =", bulk[1])

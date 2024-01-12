@@ -1,4 +1,4 @@
-#' @name read_spec
+#' @name read_specimens
 #'
 #' @title Import Specimen Information.
 #'
@@ -16,6 +16,10 @@
 #'     will be included in the output.
 #' @param bulk Integer vector including the ID's of the requested bulks
 #'     (campaigns or projects).
+#' @param schema Character value indicating the name of the schema containing
+#'     the specimens' information.
+#' @param tax_schema Character value indicating the name of the schema containng
+#'     the associated taxonomic list.
 #' @param get_coords Logical values indicating whether formatted coordinates
 #'     should be extracted from geometry or not.The default is
 #'     `'get_coords = TRUE'` but it may cause an error if some cells in the
@@ -26,30 +30,56 @@
 #'
 #' @author Miguel Alvarez \email{kamapu@@posteo.com}
 #'
-#' @rdname read_spec
+#' @rdname read_specimens
 #'
 #' @export
-read_spec <- function(db, ...) {
-  UseMethod("read_spec", db)
+read_specimens <- function(db, ...) {
+  UseMethod("read_specimens", db)
 }
 
-#' @rdname read_spec
-#' @aliases read_spec,PostgreSQLConnection-method
-#' @method read_spec PostgreSQLConnection
+#' @rdname read_specimens
+#' @aliases read_specimens,PostgreSQLConnection-method
+#' @method read_specimens PostgreSQLConnection
 #' @export
-read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
-                                           ...) {
+read_specimens.PostgreSQLConnection <- function(db, adm, bulk,
+                                                schema = "specimens",
+                                                tax_schema = "plant_taxonomy",
+                                                get_coords = TRUE, ...) {
+  # Check existence of bulks
+  db_bulks <- unlist(dbGetQuery(db, paste(
+    "select bulk",
+    paste0("from \"", schema, "\".projects")
+  )))
+  db_bulks <- db_bulks[db_bulks == bulk]
+  if (length(db_bulks) == 0) {
+    stop(paste0(
+      "Bulk '", bulk,
+      "' does not exists in the specimens' database."
+    ))
+  }
+  # Check collections belonging to the bulk
+  db_bulks <- unlist(dbGetQuery(db, paste(
+    "select bulk",
+    paste0("from \"", schema, "\".collections"),
+    paste0("where bulk = ", bulk)
+  )))
+  if (length(db_bulks) == 0) {
+    stop(paste0(
+      "There is no collections assigned to the bulk '", bulk,
+      "'."
+    ))
+  }
   # Main table
   message("Importing main tables ... ", appendLF = FALSE)
   if (missing(bulk)) {
     Coll <- st_read(db, query = paste(
       "select *",
-      "from specimens.collections;"
+      paste0("from \"", schema, "\".collections")
     ))
   } else {
     Coll <- st_read(db, query = paste(
       "select *",
-      "from specimens.collections",
+      paste0("from \"", schema, "\".collections"),
       paste0("where bulk in (", paste0(bulk, collapse = ","), ");")
     ))
   }
@@ -57,7 +87,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
   if ("bulk" %in% colnames(Coll)) {
     query <- paste(
       "select *",
-      "from specimens.projects",
+      paste0("from \"", schema, "\".projects"),
       paste0("where bulk in (", paste0(unique(Coll$bulk[!is.na(Coll$bulk)]),
         collapse = ","
       ), ");")
@@ -66,7 +96,8 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
   }
   # Import Specimens
   query <- paste(
-    "select *", "from specimens.specimens",
+    "select *",
+    paste0("from \"", schema, "\".specimens"),
     paste0(
       "where coll_nr in (", paste0(Coll$coll_nr, collapse = ","),
       ")"
@@ -77,7 +108,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
   message("OK\nImporting taxonomic information ... ", appendLF = FALSE)
   Det <- dbGetQuery(db, paste(
     "select *",
-    "from specimens.history",
+    paste0("from \"", schema, "\".history"),
     paste0("where spec_id in (", paste0(Spec$spec_id,
       collapse = ","
     ), ")"),
@@ -86,7 +117,8 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
   if (nrow(Det) > 0) {
     # Add names
     query <- paste(
-      "select *", "from plant_taxonomy.names2concepts",
+      "select *",
+      paste0("from \"", tax_schema, "\".names2concepts"),
       paste0(
         "where tax_id in (", paste0(unique(Det$tax_id), collapse = ","),
         ")"
@@ -95,7 +127,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
     tax_names <- dbGetQuery(db, query)
     query <- paste(
       "select taxon_usage_id,usage_name taxon_name,author_name taxon_author",
-      "from plant_taxonomy.taxon_names",
+      paste0("from \"", tax_schema, "\".taxon_names"),
       paste0(
         "where taxon_usage_id in (",
         paste0(tax_names$taxon_usage_id, collapse = ","), ")"
@@ -112,9 +144,13 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
     Det$genus <- dissect_name(Det$taxon_name, repaste = 1)
 
     # Get families
-    Levels <- dbGetQuery(db, "select * from plant_taxonomy.taxon_levels")
+    Levels <- dbGetQuery(db, paste(
+      "select *",
+      paste0("from \"", tax_schema, "\".taxon_levels")
+    ))
     query <- paste(
-      "select *", "from plant_taxonomy.taxon_concepts",
+      "select *",
+      paste0("from \"", tax_schema, "\".taxon_concepts"),
       paste0(
         "where taxon_concept_id in (",
         paste0(unique(tax_names$taxon_concept_id), collapse = ","), ")"
@@ -149,7 +185,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
       if (!all(is.na(TAX[, i]))) {
         query <- paste(
           paste0("select taxon_concept_id ", i, ",parent_id"),
-          "from plant_taxonomy.taxon_concepts",
+          paste0("from \"", tax_schema, "\".taxon_concepts"),
           paste0(
             "where taxon_concept_id in (",
             paste0(TAX[!is.na(TAX[, i]), i], collapse = ","), ")"
@@ -158,10 +194,11 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
         Parent <- dbGetQuery(db, query)
         query <- paste(
           "select taxon_concept_id parent_id,rank parent_rank",
-          "from plant_taxonomy.taxon_concepts",
+          paste0("from \"", tax_schema, "\".taxon_concepts"),
           paste0(
             "where taxon_concept_id in (",
-            paste0(Parent$parent_id, collapse = ","), ")"
+            paste0(Parent$parent_id[!is.na(Parent$parent_id)], collapse = ","),
+            ")"
           )
         )
         Parent <- merge(Parent, dbGetQuery(db, query), all = TRUE, sort = FALSE)
@@ -170,17 +207,17 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
     }
     query <- paste(
       "select tax_id,taxon_concept_id,taxon_usage_id",
-      "from plant_taxonomy.names2concepts",
+      paste0("from \"", tax_schema, "\".names2concepts"),
       paste0(
         "where taxon_concept_id in (",
-        paste0(TAX$family, collapse = ","), ")"
+        paste0(TAX$family[!is.na(TAX$family)], collapse = ","), ")"
       ),
       "and name_status = 'accepted'"
     )
     Families <- dbGetQuery(db, query)
     query <- paste(
       "select taxon_usage_id,usage_name",
-      "from plant_taxonomy.taxon_names",
+      paste0("from \"", tax_schema, "\".taxon_names"),
       paste0(
         "where taxon_usage_id in (",
         paste0(Families$taxon_usage_id, collapse = ","), ")"
@@ -193,7 +230,7 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
     )])
     query <- paste(
       "select tax_id,taxon_concept_id",
-      "from plant_taxonomy.names2concepts",
+      paste0("from \"", tax_schema, "\".names2concepts"),
       paste0("where tax_id in (", paste0(Det$tax_id, collapse = ","), ")")
     )
     Det <- merge(Det, dbGetQuery(db, query), all = TRUE, sort = FALSE)
@@ -234,11 +271,13 @@ read_spec.PostgreSQLConnection <- function(db, adm, bulk, get_coords = TRUE,
   )]
   # Import GADM
   if (!missing(adm)) {
-    gadm <- st_read(adm, query = paste0(
-      "select name_0,name_1,name_2,geom\n",
-      "from gadm\n",
-      "where gid_0 in ('",
-      paste0(unique(Coll$country, collapse = "','"), "');\n")
+    gadm <- st_read(adm, query = paste(
+      "select name_0,name_1,name_2,geom",
+      "from gadm",
+      paste0(
+        "where gid_0 in ('",
+        paste0(unique(Coll$country), collapse = "','"), "')"
+      )
     ))
     for (i in c("name_0", "name_1", "name_2")) {
       Coll[[i]] <- gadm[[i]][st_nearest_feature(Coll, gadm)]

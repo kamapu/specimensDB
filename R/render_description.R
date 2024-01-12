@@ -1,34 +1,34 @@
-#' @name render_desc
+#' @name render_description
 #'
 #' @title Rendering bulk description.
 #'
 #' @description
 #' Producing a PDF file with the description of the bulk (project) using
-#' [write_rmd()] and [render_rmd()].
+#' [render_rmd()].
 #'
 #' @param db Connection to the database as [PostgreSQLConnection-class].
 #' @param bulk The identifies of the bulk (project) in the database.
 #' @param output Character value or list with the output settings for the yaml
-#'     head. This is passed to [write_rmd()].
+#'     head.
 #' @param output_file Character value with the name and path to the ouput file.
 #'     I is passed to [render_rmd()].
-#' @param ... Further Arguments passed to [write_rmd()].
+#' @param ... Further Arguments passed to [list2rmd_doc()].
 #'
 #' @author Miguel Alvarez \email{kamapu@@posteo.com}
 #'
-#' @rdname render_desc
+#' @rdname render_description
 #'
 #' @export
-render_desc <- function(db, ...) {
-  UseMethod("render_desc", db)
+render_description <- function(db, ...) {
+  UseMethod("render_description", db)
 }
 
-#' @rdname render_desc
-#' @aliases render_desc,PostgreSQLConnection-method
-#' @method render_desc PostgreSQLConnection
+#' @rdname render_description
+#' @aliases render_description,PostgreSQLConnection-method
+#' @method render_description PostgreSQLConnection
 #' @export
-render_desc.PostgreSQLConnection <- function(db, bulk, output = "pdf_document",
-                                             output_file, ...) {
+render_description.PostgreSQLConnection <- function(db, bulk, output = "pdf_document",
+                                                    output_file, ...) {
   query <- paste(
     "select project_name,description", "from specimens.projects",
     paste("where bulk =", bulk[1])
@@ -37,9 +37,9 @@ render_desc.PostgreSQLConnection <- function(db, bulk, output = "pdf_document",
   if (nrow(Descr) == 0) {
     stop("Requested 'bulk' does not exist in the database.")
   }
-  Descr <- write_rmd(
+  Descr <- as(list(
     title = Descr$project_name, output = output,
     body = Descr$description, ...
-  )
+  ), "rmd_doc")
   render_rmd(Descr, output_file = output_file)
 }

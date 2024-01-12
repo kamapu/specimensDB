@@ -10,7 +10,7 @@ library(specimensDB)
 conn1 <- connect_db2("vegetation_v3", user = "miguel")
 conn2 <- connect_db2("gadm_v3", user = "miguel")
 
-Spec <- read_spec(db = conn1, adm = conn2, bulk = 2)
+Spec <- read_specimens(db = conn1, adm = conn2, bulk = 2)
 
 validObject(Spec)
 

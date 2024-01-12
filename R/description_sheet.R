@@ -12,10 +12,7 @@
 #'     Figures and r-markdown files.
 #' @param output_file A character value indicating the name of the rendered PDF
 #'     file.
-#' @param output A character value or a list passed to [write_rmd()] and
-#'     included in the yaml header.
-#' @param header_includes A character value or a list passed to [write_rmd()]
-#'     for 'header-includes' in the yaml header.
+#' @param output A character value or a list included in the yaml header.
 #' @param date_format A character value indicating the format of displayed
 #'     collection dates.
 #' @param p_tiles A character vector indicating the name of provider tiles used
@@ -23,7 +20,7 @@
 #' @param zoomLevelFixed An integer value passed to [addMiniMap()].
 #' @param vwidth,vheight An integer value each, passed to [mapshot()].
 #' @param render_args A named list with arguments passed to [render_rmd()].
-#' @param ... Further arguments passed to [write_rmd()].
+#' @param ... Further arguments passed to [list2rmd_doc()].
 #'
 #' @return A PDF file will be written.
 #'
@@ -43,14 +40,13 @@ description_sheet <- function(db, ...) {
 description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
                                                    output_file,
                                                    output = "pdf_document",
-                                                   header_includes = "- \\sffamily",
                                                    ...,
                                                    date_format = "%d.%m.%Y",
                                                    p_tiles = "OpenStreetMap",
                                                    zoomLevelFixed = 5,
                                                    vwidth = 1200, vheight = 500,
                                                    render_args = list()) {
-  Spec <- read_spec(db, bulk = bulk[1])
+  Spec <- read_specimens(db, bulk = bulk[1])
   query <- paste(
     "select *", "from specimens.projects",
     paste0("where bulk = ", bulk[1])
@@ -87,9 +83,10 @@ description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
   Loc <- paste(Loc, names(Loc), sep = " in ")
   Loc <- paste0(Loc, collapse = ", ")
   Loc <- paste0(sum(!is.na(Spec@specimens$herbarium)), " (", Loc, ")")
-  Doc <- write_rmd(
-    title = Descr["project_name"], output = output,
-    "header-includes" = header_includes, body = txt_body(c(
+  Doc <- as(list(
+    title = Descr["project_name"], output = output, body = txt_body(c(
+      "\\sffamily",
+      "",
       "# Description",
       "",
       Descr["description"],
@@ -102,17 +99,17 @@ description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
       "",
       paste0("**Collection Period:** ", DAT),
       "",
-      paste0("**Collected Specimens: **", nrow(Spec@specimens)),
+      paste0("**Collected Specimens:** ", nrow(Spec@specimens)),
       "",
-      paste0("**Stored Specimens: **", Loc),
+      paste0("**Stored Specimens:** ", Loc),
       "",
-      paste0("**Disposed Specimens: **", sum(Spec@specimens$gone)),
+      paste0("**Disposed Specimens:** ", sum(Spec@specimens$gone)),
       "",
       "# Geographic Distribution",
       "",
       paste0("![](", map_file, ")")
     )), ...
-  )
+  ), "rmd_doc")
   if (missing(output_file)) {
     output_file <- tempfile(tmpdir = wd)
   }

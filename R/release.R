@@ -5,12 +5,12 @@
 #' @title Release a table for an herbarium
 #'
 #' @description
-#' Processing data frame obtained by [read_spec()] to be released at a
+#' Processing data frame obtained by [read_specimens()] to be released at a
 #' respective herbarium.
 #'
 #' Some herbaria have a template for storage of data.
 #'
-#' @param x A [specimens-class] object retrieved by [read_spec()].
+#' @param x A [specimens-class] object retrieved by [read_specimens()].
 #' @param herb A character value containig the code of the herbarium for the
 #'     release.
 #' @param trans A list containing translations of variable names to the

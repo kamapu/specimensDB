@@ -21,13 +21,11 @@ project_list(db, ...)
 
 \item{...}{Further arguments passed to \code{\link[=render_rmd]{render_rmd()}}.}
 
-\item{title}{Character value with the title of the document. Passed to
-\code{\link[=write_rmd]{write_rmd()}}.}
+\item{title}{Character value with the title of the document.}
 
-\item{output}{character value indicating the format of the output document.
-Passed to \code{\link[=write_rmd]{write_rmd()}}.}
+\item{output}{character value indicating the format of the output document.}
 
-\item{rmd_args}{Named list of further arguments passed to \code{\link[=write_rmd]{write_rmd()}}.}
+\item{rmd_args}{Named list of further arguments passed to \code{\link[=list2rmd_doc]{list2rmd_doc()}}.}
 }
 \description{
 A document listing all project descriptions in an overview.

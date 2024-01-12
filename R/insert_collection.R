@@ -1,4 +1,4 @@
-#' @name new_coll
+#' @name insert_collection
 #'
 #' @title Insert new collections to database.
 #'
@@ -20,29 +20,36 @@
 #'
 #' @author Miguel Alvarez \email{kamapu@@posteo.com}
 #'
-#' @rdname new_coll
+#' @rdname insert_collection
 #'
-#' @exportMethod new_coll
+#' @exportMethod insert_collection
 setGeneric(
-  "new_coll",
+  "insert_collection",
   function(db, sf, bulk, ...) {
-    standardGeneric("new_coll")
+    standardGeneric("insert_collection")
   }
 )
 
-#' @rdname new_coll
-#' @aliases new_coll,PostgreSQLConnection,data.frame,integer-method
+#' @rdname insert_collection
+#' @aliases insert_collection,PostgreSQLConnection,data.frame,integer-method
 setMethod(
-  "new_coll", signature(
+  "insert_collection", signature(
     db = "PostgreSQLConnection", sf = "sf",
     bulk = "integer"
   ),
   function(db, sf, bulk, ...) {
     # In case of a coll_nr column
-    sf <- sf[, names(sf) != "coll_nr"]
+    sf <- sf[, !names(sf) %in% c("coll_nr", "bulk", "spec_id")]
     # TODO: Define and check mandatory columns (excludes coll_nr)
     if (length(bulk) > 1) {
       warning("Only the first element of 'bulk' will be used.")
+    }
+    if (!"field_nr" %in% names(sf)) {
+      message("Column 'field_nr' automatically added to 'sf'.")
+      sf$field_nr <- 1:nrow(sf)
+    }
+    if (any(duplicated(sf$field_nr))) {
+      stop("Duplicated values in column 'field_nr' in 'sf' are not allowed.")
     }
     sf$bulk <- bulk[1]
     query <- paste(
@@ -61,30 +68,32 @@ setMethod(
     pgInsert(db, c("specimens", "collections"), sf, "geom_point",
       partial.match = TRUE
     )
-    new_ids <- unlist(dbGetQuery(db, paste(
-      "select coll_nr",
-      "from specimens.collections"
-    )))
-    new_ids <- new_ids[!new_ids %in% old_ids]
-    pgInsert(db, c("specimens", "specimens"), data.frame(coll_nr = new_ids))
+    sf <- sf@data
+    new_ids <- dbGetQuery(db, paste(
+      "select coll_nr,field_nr",
+      "from specimens.collections",
+      paste0("where coll_nr not in (", paste0(old_ids, collapse = ","), ")")
+    ))
+    sf$coll_nr <- with(new_ids, coll_nr[match(sf$field_nr, field_nr)])
+    pgInsert(db, c("specimens", "specimens"), sf, partial.match = TRUE)
     message("\nDONE!")
   }
 )
 
-#' @rdname new_coll
-#' @aliases new_coll,PostgreSQLConnection,data.frame,numeric-method
+#' @rdname insert_collection
+#' @aliases insert_collection,PostgreSQLConnection,data.frame,numeric-method
 setMethod(
-  "new_coll", signature(
+  "insert_collection", signature(
     db = "PostgreSQLConnection", sf = "sf",
     bulk = "numeric"
   ),
-  function(db, sf, bulk, ...) new_coll(db, sf, as.integer(bulk), ...)
+  function(db, sf, bulk, ...) insert_collection(db, sf, as.integer(bulk), ...)
 )
 
-#' @rdname new_coll
-#' @aliases new_coll,PostgreSQLConnection,data.frame,character-method
+#' @rdname insert_collection
+#' @aliases insert_collection,PostgreSQLConnection,data.frame,character-method
 setMethod(
-  "new_coll", signature(
+  "insert_collection", signature(
     db = "PostgreSQLConnection", sf = "sf",
     bulk = "character"
   ),
@@ -121,6 +130,6 @@ setMethod(
         "'.\n"
       ))
     }
-    new_coll(db, sf, bulk_id, ...)
+    insert_collection(db, sf, bulk_id, ...)
   }
 )

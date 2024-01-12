@@ -7,7 +7,9 @@ Authors@R:
 		role=c("aut","cre"), comment=c(ORCID="0000-0003-1500-1834"))
 Depends:
 	R(>= 4.0.0),
-	specimens
+	divDB,
+	specimens,
+	yamlme
 Imports:
     DBI,
     leaflet,
@@ -18,10 +20,11 @@ Imports:
 	RPostgreSQL,
     sf,
     taxlist,
-    utils,
-    yamlme
+    utils
 Remotes:
-	github::kamapu/specimens
+    github::kamapu/divDB,
+	github::kamapu/specimens,
+	github::kamapu/yamlme
 Suggests:
 	rmarkdown,
 	testthat
@@ -32,4 +35,4 @@ Roxygen: list(markdown = TRUE)
 License: file LICENSE
 URL: https://github.com/kamapu/specimensDB
 BugReports: https://github.com/kamapu/specimensDB/issues
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3

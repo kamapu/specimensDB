@@ -7,7 +7,7 @@
 #' @description
 #' Generating labels for vouchers using exported tables.
 #'
-#' @param x A [specimens-class] object retrieved by [read_spec()].
+#' @param x A [specimens-class] object retrieved by [read_specimens()].
 #' @param output_file A character value indicating the name of the file. It may
 #'     include a relative path. This is passed to the homonymous parameter at
 #'     [render_rmd()].
@@ -27,7 +27,7 @@
 #'     **u** (units).
 #' @param classoption A character value to be inserted as 'classoption' in the
 #'     yaml head for the Rmarkdown document.
-#' @param ... Further arguments passed to [write_rmd()]. It works only if
+#' @param ... Further arguments passed to [list2rmd_doc()]. It works only if
 #'     `'merge = TRUE'`.
 #'
 #' @return
@@ -72,7 +72,7 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
   # Get rid of NA's
   for (i in names(x)) {
     x[[i]] <- paste(x[[i]])
-    x[[i]][x[[i]] == "NA"] <- ""
+    x[[i]][x[[i]] %in% c("NA", "*NA*")] <- ""
   }
   # Write label body
   Body <- with(x, cbind(
@@ -99,7 +99,7 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
     rep("\\pagebreak", N)
   ))
   # Produce single files
-  Labels <- write_rmd(
+  Labels <- as(list(
     geometry = paste0(
       c(
         paste0(
@@ -116,17 +116,17 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
       collapse = ","
     ),
     "header-includes" = c(
-      "- \\usepackage[english]{babel}",
-      "- \\pagenumbering{gobble}"
+      "\\usepackage[english]{babel}",
+      "\\pagenumbering{gobble}"
     ),
     output = "pdf_document",
     body = txt_body(as.vector(t(Body)))
-  )
+  ), "rmd_doc")
   out_file <- tempfile()
   render_rmd(Labels, output_file = out_file)
   # Merge into
   if (merge) {
-    Labels2 <- write_rmd(
+    Labels2 <- as(list(
       geometry = paste(
         "bindingoffset=0mm",
         "left=0mm",
@@ -137,7 +137,8 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
         sep = ","
       ),
       "header-includes" = c(
-        "- \\usepackage{pdfpages}"
+        "\\usepackage[english]{babel}",
+        "\\usepackage{pdfpages}"
       ),
       output = "pdf_document",
       body = paste0(
@@ -146,7 +147,7 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
       ),
       classoption = classoption,
       ...
-    )
+    ), "rmd_doc")
     # Render merged sheets
     render_rmd(Labels2, output_file = output_file)
   } else {

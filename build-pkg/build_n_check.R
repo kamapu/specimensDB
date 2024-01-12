@@ -24,6 +24,6 @@ unlink(file.path(Folder, Files))
 pkg_loc <- build(path = Folder)
 check_built(path = pkg_loc)
 
-# a posteriori
+# a posteriori -----------------------------------------------------------------
 build_manual(path = Folder)
 install()

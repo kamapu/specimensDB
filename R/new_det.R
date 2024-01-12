@@ -57,7 +57,8 @@ setMethod(
         paste0(col_names, collapse = "' '"), "'."
       ))
     }
-    if (class(df$det_date) != "Date") {
+    df <- df[, col_names]
+    if (!is(df$det_date, "Date")) {
       stop("Class 'Date' for 'det_date' in 'df' is mandatory.")
     }
     # Skipping duplicated entries by comparing input and database

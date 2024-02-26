@@ -10,7 +10,7 @@ project_list(db, ...)
 
 \method{project_list}{PostgreSQLConnection}(
   db,
-  title = "List of Collections",
+  title = "Collections List",
   output = "pdf_document",
   rmd_args = list(),
   ...

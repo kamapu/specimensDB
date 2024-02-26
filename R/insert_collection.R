@@ -16,6 +16,8 @@
 #'     ID will be retrieved from the database (table **projects**, schema
 #'     **specimens**). If the name is not in database, it will be considered as
 #'     a new bulk and inserted accordingly.
+#' @param schema A character value with the names of the schema containing the
+#'     specimens database.
 #' @param ... Further arguments passed among methods.
 #'
 #' @author Miguel Alvarez \email{kamapu@@posteo.com}
@@ -37,7 +39,7 @@ setMethod(
     db = "PostgreSQLConnection", sf = "sf",
     bulk = "integer"
   ),
-  function(db, sf, bulk, ...) {
+  function(db, sf, bulk, schema = "specimens", ...) {
     # In case of a coll_nr column
     sf <- sf[, !names(sf) %in% c("coll_nr", "bulk", "spec_id")]
     # TODO: Define and check mandatory columns (excludes coll_nr)
@@ -53,7 +55,8 @@ setMethod(
     }
     sf$bulk <- bulk[1]
     query <- paste(
-      "select bulk", "from specimens.projects",
+      "select bulk",
+      paste0("from \"", schema, "\".projects"),
       paste("where bulk =", bulk[1])
     )
     if (length(unlist(dbGetQuery(db, query))) < 1) {
@@ -63,19 +66,19 @@ setMethod(
     # Collect IDs and insert new entries
     old_ids <- unlist(dbGetQuery(db, paste(
       "select coll_nr",
-      "from specimens.collections"
+      paste0("from \"", schema, "\".collections")
     )))
-    pgInsert(db, c("specimens", "collections"), sf, "geom_point",
+    pgInsert(db, c(schema, "collections"), sf, "geom_point",
       partial.match = TRUE
     )
     sf <- sf@data
     new_ids <- dbGetQuery(db, paste(
       "select coll_nr,field_nr",
-      "from specimens.collections",
+      paste0("from \"", schema, "\".collections"),
       paste0("where coll_nr not in (", paste0(old_ids, collapse = ","), ")")
     ))
     sf$coll_nr <- with(new_ids, coll_nr[match(sf$field_nr, field_nr)])
-    pgInsert(db, c("specimens", "specimens"), sf, partial.match = TRUE)
+    pgInsert(db, c(schema, "specimens"), sf, partial.match = TRUE)
     message("\nDONE!")
   }
 )
@@ -97,12 +100,13 @@ setMethod(
     db = "PostgreSQLConnection", sf = "sf",
     bulk = "character"
   ),
-  function(db, sf, bulk, ...) {
+  function(db, sf, bulk, schema = "specimens", ...) {
     if (length(bulk) > 1) {
       warning("Only the first element of 'bulk' will be used.")
     }
     query <- paste(
-      "select bulk", "from specimens.projects",
+      "select bulk",
+      paste0("from \"", schema, "\".projects"),
       paste0("where project_name = '", bulk[1], "'")
     )
     bulk_id <- unlist(dbGetQuery(db, query))
@@ -113,15 +117,15 @@ setMethod(
       ))
       old_ids <- unlist(dbGetQuery(db, paste(
         "select bulk",
-        "from specimens.projects"
+        paste0("from \"", schema, "\".projects")
       )))
       pgInsert(
-        db, c("specimens", "projects"),
+        db, c(schema, "projects"),
         data.frame(project_name = bulk[1])
       )
       new_ids <- unlist(dbGetQuery(db, paste(
         "select bulk",
-        "from specimens.projects"
+        paste0("from \"", schema, "\".projects")
       )))
       bulk_id <- new_ids[!new_ids %in% old_ids]
     } else {
@@ -130,6 +134,6 @@ setMethod(
         "'.\n"
       ))
     }
-    insert_collection(db, sf, bulk_id, ...)
+    insert_collection(db, sf, bulk_id, schema, ...)
   }
 )

@@ -24,8 +24,11 @@ project_list <- function(db, ...) {
 #' @aliases project_list,PostgreSQLConnection-method
 #' @method project_list PostgreSQLConnection
 #' @export
-                                              output = "pdf_document",
-                                              rmd_args = list(), ...) {
+project_list.PostgreSQLConnection <- function(
+    db,
+    title = "Collections List",
+    output = "pdf_document",
+    rmd_args = list(), ...) {
   # Main table
   Projects <- dbGetQuery(db, paste(
     "select *",

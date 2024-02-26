@@ -54,7 +54,7 @@ write_labels.specimens <- function(x, output_file, merge = TRUE, frame = FALSE,
                                      u = "mm"
                                    ),
                                    classoption = "a4paper", ...) {
-  x <- as_data.frame(x)
+  x <- as(x, "data.frame")
   # get rid of extension
   if (substr(
     output_file, nchar(output_file) - 3,

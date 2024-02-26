@@ -17,7 +17,7 @@
 #'     requested template. The name of the elements represent an herbarium
 #'     (usually as code by the Index Herbariorum) and contain a database with
 #'     two columns: **in** for the column name of the input object (after
-#'     applying [as_data.frame()]), and the column **out** with the names
+#'     coersing to data frame), and the column **out** with the names
 #'     respective column names in the output. For columns in the requested
 #'     output without representative in the [specimens-class] object, you may
 #'     indicate it with `NA` values at **in**. If not provided, this function
@@ -51,7 +51,7 @@ release.specimens <- function(x, herb, trans, ...) {
       "' is not in the installed catalog."
     ))
   }
-  x <- as_data.frame(x)
+  x <- as(x, "data.frame")
   names(x) <- with(
     trans[[herb]][!is.na(trans[[herb]]$"in"), ],
     replace_x(names(x), get("in"), get("out"))

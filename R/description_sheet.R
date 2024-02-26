@@ -6,6 +6,8 @@
 #' Automatic rendering of an overview sheet for a specific bulk.
 #'
 #' @param db Connection to the database as [PostgreSQLConnection-class].
+#' @param schema A character value with the names of the schema containing the
+#'     table of the projects (mandatory name of this table is **projects**).
 #' @param bulk Integer vector including the ID's of the requested bulks
 #'     (campaigns or projects).
 #' @param wd A character value indicating the path to store produced files (i.e.
@@ -37,18 +39,22 @@ description_sheet <- function(db, ...) {
 #' @aliases description_sheet,PostgreSQLConnection-method
 #' @method description_sheet PostgreSQLConnection
 #' @export
-description_sheet.PostgreSQLConnection <- function(db, bulk, wd = tempdir(),
-                                                   output_file,
-                                                   output = "pdf_document",
-                                                   ...,
-                                                   date_format = "%d.%m.%Y",
-                                                   p_tiles = "OpenStreetMap",
-                                                   zoomLevelFixed = 5,
-                                                   vwidth = 1200, vheight = 500,
-                                                   render_args = list()) {
+description_sheet.PostgreSQLConnection <- function(
+    db,
+    schema = "specimens",
+    bulk, wd = tempdir(),
+    output_file,
+    output = "pdf_document",
+    ...,
+    date_format = "%d.%m.%Y",
+    p_tiles = "OpenStreetMap",
+    zoomLevelFixed = 5,
+    vwidth = 1200, vheight = 500,
+    render_args = list()) {
   Spec <- read_specimens(db, bulk = bulk[1])
   query <- paste(
-    "select *", "from specimens.projects",
+    "select *",
+    paste0("from \"", schema, "\".projects"),
     paste0("where bulk = ", bulk[1])
   )
   Descr <- unlist(dbGetQuery(db, query))

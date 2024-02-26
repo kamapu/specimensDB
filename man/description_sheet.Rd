@@ -10,6 +10,7 @@ description_sheet(db, ...)
 
 \method{description_sheet}{PostgreSQLConnection}(
   db,
+  schema = "specimens",
   bulk,
   wd = tempdir(),
   output_file,
@@ -27,6 +28,9 @@ description_sheet(db, ...)
 \item{db}{Connection to the database as \linkS4class{PostgreSQLConnection}.}
 
 \item{...}{Further arguments passed to \code{\link[=list2rmd_doc]{list2rmd_doc()}}.}
+
+\item{schema}{A character value with the names of the schema containing the
+table of the projects (mandatory name of this table is \strong{projects}).}
 
 \item{bulk}{Integer vector including the ID's of the requested bulks
 (campaigns or projects).}

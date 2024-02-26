@@ -22,7 +22,7 @@ release.}
 requested template. The name of the elements represent an herbarium
 (usually as code by the Index Herbariorum) and contain a database with
 two columns: \strong{in} for the column name of the input object (after
-applying \code{\link[=as_data.frame]{as_data.frame()}}), and the column \strong{out} with the names
+coersing to data frame), and the column \strong{out} with the names
 respective column names in the output. For columns in the requested
 output without representative in the \linkS4class{specimens} object, you may
 indicate it with \code{NA} values at \strong{in}. If not provided, this function

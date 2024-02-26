@@ -12,11 +12,11 @@
 \usage{
 insert_collection(db, sf, bulk, ...)
 
-\S4method{insert_collection}{PostgreSQLConnection,sf,integer}(db, sf, bulk, ...)
+\S4method{insert_collection}{PostgreSQLConnection,sf,integer}(db, sf, bulk, schema = "specimens", ...)
 
 \S4method{insert_collection}{PostgreSQLConnection,sf,numeric}(db, sf, bulk, ...)
 
-\S4method{insert_collection}{PostgreSQLConnection,sf,character}(db, sf, bulk, ...)
+\S4method{insert_collection}{PostgreSQLConnection,sf,character}(db, sf, bulk, schema = "specimens", ...)
 }
 \arguments{
 \item{db}{Connections to the database as \linkS4class{PostgreSQLConnection}.}
@@ -32,6 +32,9 @@ ID will be retrieved from the database (table \strong{projects}, schema
 a new bulk and inserted accordingly.}
 
 \item{...}{Further arguments passed among methods.}
+
+\item{schema}{A character value with the names of the schema containing the
+specimens database.}
 }
 \description{
 A straight forward method to insert new collections in the specimens

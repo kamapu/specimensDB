@@ -56,10 +56,10 @@ release.specimens <- function(x, herb, trans, ...) {
     trans[[herb]][!is.na(trans[[herb]]$"in"), ],
     replace_x(names(x), get("in"), get("out"))
   )
-  for (i in trans[[herb]][is.na(trans[[herb]][, "in"]), "out"]) {
+  for (i in trans[[herb]][is.na(trans[[herb]][, "in"]), ]$out) {
     x[[i]] <- rep(NA, length(x[[1]]))
   }
-  no_name <- trans[[herb]][, "out"][!trans[[herb]][, "out"] %in%
+  no_name <- trans[[herb]]$out[!trans[[herb]]$out %in%
     names(x)]
   if (length(no_name) > 0) {
     stop(paste0(
@@ -67,7 +67,7 @@ release.specimens <- function(x, herb, trans, ...) {
       paste0(no_name, collapse = "','"), "'."
     ))
   }
-  x <- x[, trans[[herb]][, "out"]]
-  class(x) <- "data.frame"
+  x <- x[, trans[[herb]]$out]
+  ## class(x) <- "data.frame"
   return(x)
 }

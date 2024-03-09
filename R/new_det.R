@@ -152,7 +152,7 @@ setMethod(
         )]
       )
     }
-    pgInsert(db, c("specimens", "history"), Names, partial.match = TRUE)
+    pgWriteGeom(db, c("specimens", "history"), Names, partial.match = TRUE)
     message("\nDONE!")
   }
 )

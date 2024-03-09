@@ -68,7 +68,7 @@ setMethod(
       "select coll_nr",
       paste0("from \"", schema, "\".collections")
     )))
-    pgInsert(db, c(schema, "collections"), sf, "geom_point",
+    pgWriteGeom(db, c(schema, "collections"), sf, "geom_point",
       partial.match = TRUE
     )
     sf <- sf@data
@@ -78,7 +78,7 @@ setMethod(
       paste0("where coll_nr not in (", paste0(old_ids, collapse = ","), ")")
     ))
     sf$coll_nr <- with(new_ids, coll_nr[match(sf$field_nr, field_nr)])
-    pgInsert(db, c(schema, "specimens"), sf, partial.match = TRUE)
+    pgWriteGeom(db, c(schema, "specimens"), sf, partial.match = TRUE)
     message("\nDONE!")
   }
 )
@@ -119,7 +119,7 @@ setMethod(
         "select bulk",
         paste0("from \"", schema, "\".projects")
       )))
-      pgInsert(
+      pgWriteGeom(
         db, c(schema, "projects"),
         data.frame(project_name = bulk[1])
       )

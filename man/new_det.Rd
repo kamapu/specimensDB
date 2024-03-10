@@ -7,7 +7,15 @@
 \usage{
 new_det(db, df, ...)
 
-\S4method{new_det}{PostgreSQLConnection,data.frame}(db, df, compare = FALSE, ...)
+\S4method{new_det}{PostgreSQLConnection,data.frame}(
+  db,
+  df,
+  schema = "specimens",
+  tax_schema = "plant_taxonomy",
+  compare = FALSE,
+  ask = TRUE,
+  ...
+)
 }
 \arguments{
 \item{db}{Connections to the database as \linkS4class{PostgreSQLConnection}.}
@@ -22,12 +30,21 @@ determination as \link[=as.Date]{Date}).}
 
 \item{...}{Further arguments passed among methods (not yet used).}
 
+\item{schema}{Character value indicating the name of the schema containing
+the specimens' information.}
+
+\item{tax_schema}{Character value indicating the name of the schema containng
+the associated taxonomic list.}
+
 \item{compare}{Logical value indicating whether the determinations to be
 inserted should be compared with the input data frame or not (by default,
 not). If determinations for the same specimen at the same date are
 suppossed to be inserted in the database, they will be skipped.
 Note that duplicates in the input data frame will not be solved by this
 setting.}
+
+\item{ask}{A logical value, whether the function retrieves an interactive
+request printing the data frame to be appended or not.}
 }
 \value{
 SQL commands will be executed.

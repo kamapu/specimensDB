@@ -133,13 +133,14 @@ setMethod(
     )])
     if (ask) {
       OUT <- askYesNo("Do you like to proceed?")
+      if (is.na(OUT)) OUT <- FALSE
     } else {
-      OUT <- FALSE
+      OUT <- TRUE
     }
-    if (!is.na(OUT) & OUT) {
+    if (OUT) {
       query <- paste(
         "select tax_id,taxon_usage_id,taxon_concept_id",
-        "from plant_taxonomy.names2concepts",
+        paste0("from \"", tax_schema, "\".names2concepts"),
         paste0(
           "where taxon_usage_id in (",
           paste0(Names$taxon_usage_id, collapse = ","), ")"
@@ -148,7 +149,7 @@ setMethod(
       IDs <- dbGetQuery(db, query)
       query <- paste(
         "select taxon_concept_id,top_view taxonomy",
-        "from plant_taxonomy.taxon_concepts",
+        paste0("from \"", tax_schema, "\".taxon_concepts"),
         paste0(
           "where taxon_concept_id in (",
           paste0(IDs$taxon_concept_id, collapse = ","), ")"
@@ -162,8 +163,18 @@ setMethod(
           paste(taxon_usage_id, taxonomy, sep = "_")
         )]
       )
+      if (any(is.na(Names$tax_id))) {
+        cat("These updates does not match any tax_id in database:\n\n")
+        print(Names[is.na(Names$tax_id), c(
+          "spec_id", "coll_nr", "usage_name", "author_name", "det",
+          "det_date"
+        )])
+        stop("Possible bad combination of 'taxon_usage_id' and 'taxonomy'.")
+      }
+      pgWriteGeom(db, c(schema, "history"), Names, partial.match = TRUE)
+      message("\nDONE!")
+    } else {
+      stop("This update was cancelled by the user.")
     }
-    pgWriteGeom(db, c(schema, "history"), Names, partial.match = TRUE)
-    message("\nDONE!")
   }
 )

@@ -72,7 +72,7 @@ description_sheet.PostgreSQLConnection <- function(
       radius = 6
     ) %>%
     addMiniMap(zoomLevelFixed = zoomLevelFixed)
-  mapshot(Map,
+  mapshot2(Map,
     file = map_file, vwidth = vwidth, vheight = vheight,
     remove_controls = c(
       "zoomControl", "layersControl", "homeButton",

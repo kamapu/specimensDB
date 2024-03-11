@@ -2,7 +2,7 @@
 #' @importFrom leaflet addCircleMarkers addMiniMap addProviderTiles addScaleBar
 #'     leaflet
 #' @importFrom magrittr %>%
-#' @importFrom mapview mapshot
+#' @importFrom mapview mapshot2
 #' @importFrom methods as is new setOldClass
 #' @importFrom rpostgis pgWriteGeom
 #' @importFrom sf st_coordinates st_drop_geometry st_nearest_feature st_read

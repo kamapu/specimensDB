@@ -17,12 +17,18 @@
 #'     (name of the taxonomic list applied to the update), **det** (name of the
 #'     person that determined the species), and **det_date** (date of
 #'     determination as [Date][as.Date]).
+#' @param schema Character value indicating the name of the schema containing
+#'     the specimens' information.
+#' @param tax_schema Character value indicating the name of the schema containng
+#'     the associated taxonomic list.
 #' @param compare Logical value indicating whether the determinations to be
 #'     inserted should be compared with the input data frame or not (by default,
 #'     not). If determinations for the same specimen at the same date are
 #'     suppossed to be inserted in the database, they will be skipped.
 #'     Note that duplicates in the input data frame will not be solved by this
 #'     setting.
+#' @param ask A logical value, whether the function retrieves an interactive
+#'     request printing the data frame to be appended or not.
 #' @param ... Further arguments passed among methods (not yet used).
 #'
 #' @return SQL commands will be executed.
@@ -47,7 +53,8 @@ setMethod(
     db = "PostgreSQLConnection",
     df = "data.frame"
   ),
-  function(db, df, compare = FALSE, ...) {
+  function(db, df, schema = "specimens", tax_schema = "plant_taxonomy",
+           compare = FALSE, ask = TRUE, ...) {
     col_names <- c("spec_id", "taxon_usage_id", "taxonomy", "det", "det_date")
     # Cross-checks
     if (!all(col_names %in% names(df))) {
@@ -64,7 +71,7 @@ setMethod(
     # Skipping duplicated entries by comparing input and database
     query <- paste(
       "select spec_id,det_date",
-      "from specimens.history",
+      paste0("from \"", schema, "\".history"),
       paste0(
         "where spec_id in (", paste0(unique(df$spec_id), collapse = ","),
         ")"
@@ -102,7 +109,7 @@ setMethod(
     # Append collection number
     query <- paste(
       "select coll_nr,spec_id",
-      "from specimens.specimens",
+      paste0("from \"", schema, "\".specimens"),
       paste0(
         "where spec_id in (", paste0(unique(df$spec_id), collapse = ","),
         ")"
@@ -112,7 +119,7 @@ setMethod(
     # Retrieve names
     query <- paste(
       "select taxon_usage_id,usage_name,author_name",
-      "from plant_taxonomy.taxon_names",
+      paste0("from \"", tax_schema, "\".taxon_names"),
       paste0("where taxon_usage_id in (", paste0(df$taxon_usage_id,
         collapse = ","
       ), ")")
@@ -124,7 +131,11 @@ setMethod(
       "spec_id", "coll_nr", "usage_name", "author_name", "det",
       "det_date"
     )])
-    OUT <- askYesNo("Do you like to proceed?")
+    if (ask) {
+      OUT <- askYesNo("Do you like to proceed?")
+    } else {
+      OUT <- FALSE
+    }
     if (!is.na(OUT) & OUT) {
       query <- paste(
         "select tax_id,taxon_usage_id,taxon_concept_id",
@@ -152,7 +163,7 @@ setMethod(
         )]
       )
     }
-    pgWriteGeom(db, c("specimens", "history"), Names, partial.match = TRUE)
+    pgWriteGeom(db, c(schema, "history"), Names, partial.match = TRUE)
     message("\nDONE!")
   }
 )
